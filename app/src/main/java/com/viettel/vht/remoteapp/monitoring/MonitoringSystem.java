@@ -102,22 +102,15 @@ public class MonitoringSystem {
                                     getDrawableResIdByName(aqStatus.getQualityLevel().toCycle()), null);
 
                             // set data for AQ Status
-//                            View parent = (View)gdView2.getParent();
-//                            int aqStatusSize = (int) (parent.getTop()/1.5);
-//                            //System.out.println("Size: " + parent.getTop()/1.5);
-//                            vAQStatus.setLayoutParams(new ConstraintLayout.LayoutParams(aqStatusSize, aqStatusSize));
                             txtAQLevel.setText(toLevelString(aqStatus.getQualityLevel()));
                             txtAQTitle.setText(aqStatus.getName());
                             txtAQValue.setText(aqStatus.getValue());
                             vAQStatus.setBackground(shapeDrawable);
 
-                            // vAQStatus.setLayoutParams(new RelativeLayout.LayoutParams(50,50));
-
-
                             // set status for device
                             String msTime = mesuareTime.toString();
                             System.out.println("TIME: " + msTime);
-                            if (msTime.lastIndexOf("0 minute") > -1) {
+                            if (msTime.lastIndexOf("0 ") == 0 || msTime.lastIndexOf(" 0 ") > -1) {
                                 //  System.out.println("I'M HERE");
                                 dsText.setText(activity.getApplicationContext().getString(R.string.online));
                                 dsText.setTextColor(activity.getColor(R.color.Black));
@@ -125,19 +118,6 @@ public class MonitoringSystem {
                                         R.drawable.online_ic, null);
                                 dsIcon.setBackground(gradientDrawable);
                             } else {
-                                if (msTime.lastIndexOf("Yeste") > -1)
-                                    msTime = "1 " +  activity.getApplicationContext().getString(R.string.dayago);
-                               // msTime = msTime.replaceAll("Yesterday", "1");
-                                else if (msTime.lastIndexOf("day") > -1) {
-                                    msTime = msTime.substring(0, msTime.lastIndexOf("day") - 1) + " " + activity.getApplicationContext().getString(R.string.dayago);
-                                } else if (msTime.lastIndexOf("hour") > -1) {
-                                    msTime = msTime.substring(0, msTime.lastIndexOf("hour") - 1) + " " + activity.getApplicationContext().getString(R.string.hourago);
-                                } else {
-                                    msTime = msTime.substring(0, msTime.lastIndexOf("minute") - 1) + " " + activity.getApplicationContext().getString(R.string.minago);
-                                }
-
-
-
                                 dsText.setText(activity.getApplicationContext().getString(R.string.active) + " " + msTime);
                                 dsText.setTextColor(activity.getColor(R.color.Grey));
                                 GradientDrawable gradientDrawable = (GradientDrawable) ResourcesCompat.getDrawable(activity.getApplicationContext().getResources(),

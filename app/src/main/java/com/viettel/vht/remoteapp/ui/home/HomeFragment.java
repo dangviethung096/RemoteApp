@@ -581,7 +581,7 @@ public class HomeFragment extends Fragment {
                     if (checkStateBetweenExpectedAndUI()) {
                         diffCount++;
                         if (diffCount == Constants.MAX_DIFF_COUNT) {
-                            showCannotRemoteDeviceDialog();
+//                            showCannotRemoteDeviceDialog();
                             updateUI();
                         }
                     } else {
