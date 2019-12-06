@@ -254,7 +254,7 @@ public class MqttClientToAWS implements Serializable {
         mqttManager.publishString("getinfo", DevicesTopics.REQUEST_DEVICE_INFO, AWSIotMqttQos.QOS0);
     }
 
-    public void requestAllStatesOfDevice(String smartPlugId) throws InterruptedException {
+    public void requestAllStatesOfDevice(String smartPlugId) {
         // request power of device
         requestPowerStateOfDevice(smartPlugId);
         // Check speed of device
@@ -289,14 +289,23 @@ public class MqttClientToAWS implements Serializable {
         }
     }
 
-    public void publish(String msg, String topic) {
+    public boolean publish(String msg, String topic) {
         Log.d(LOG_TAG, "publish message: " + msg + ", to topic: " + topic);
-        mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
+        // Check connected
+        if (isConnected) {
+            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
+            return true;
+        }
+        return false;
     }
 
-    public void subscribe(String topic, AWSIotMqttNewMessageCallback callback) {
+    public boolean subscribe(String topic, AWSIotMqttNewMessageCallback callback) {
         Log.d(LOG_TAG, "subscribe topic = " + topic);
-        mqttManager.subscribeToTopic(topic, AWSIotMqttQos.QOS1, callback);
+        if (isConnected) {
+            mqttManager.subscribeToTopic(topic, AWSIotMqttQos.QOS1, callback);
+            return true;
+        }
+        return false;
     }
 
     public void changePower(String deviceId) {

@@ -31,6 +31,7 @@ import com.viettel.vht.remoteapp.common.PowerState;
 import com.viettel.vht.remoteapp.common.SpeedState;
 import com.viettel.vht.remoteapp.monitoring.MonitoringSystem;
 import com.viettel.vht.remoteapp.objects.AirPurifier;
+import com.viettel.vht.remoteapp.utilities.MqttClientToAWS;
 
 public class HomeFragment extends Fragment {
 
@@ -39,13 +40,14 @@ public class HomeFragment extends Fragment {
     RelativeLayout aqStatus;
     TextView txtAQValue, txtAQLevel, txtAQTitle;
     ProgressBar loadingBar;
-    SwipeRefreshLayout refreshStatusSwipe;
     ImageView dsIcon;
     TextView dsText;
 
     private Thread monitoringThread;
     private MonitoringSystem monitoringSystem;
     private MainActivity parentActivity;
+    private MqttClientToAWS mqttClient;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +69,6 @@ public class HomeFragment extends Fragment {
         txtAQLevel = (TextView) root.findViewById(R.id.aq_status_level);
         txtAQTitle = (TextView) root.findViewById(R.id.aq_status_title);
         loadingBar = (ProgressBar) root.findViewById(R.id.loading);
-//        refreshStatusSwipe = (SwipeRefreshLayout) root.findViewById(R.id.swiperefreshStatus);
         dsIcon = (ImageView) root.findViewById(R.id.ds_icon);
         dsText = (TextView) root.findViewById(R.id.ds_text);
 
@@ -80,18 +81,6 @@ public class HomeFragment extends Fragment {
             }
         };
         monitoringThread.start();
-
-//        refreshStatusSwipe.setOnRefreshListener(
-//                new SwipeRefreshLayout.OnRefreshListener() {
-//                    @Override
-//                    public void onRefresh() {
-//                        Log.i(LOG_TAG, "onRefresh called from SwipeRefreshLayout");
-//                        if (monitoringSystem != null)
-//                            monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, refreshStatusSwipe, dsIcon, dsText);
-//
-//                    }
-//                }
-//        );
 
         // Hungdv39 change below
         // Power
@@ -124,9 +113,24 @@ public class HomeFragment extends Fragment {
                     }
                 }).create();
 
+
+        // Get mqtt client
+        mqttClient = parentActivity.getMqttClient();
         // get expected state in device
-        expectedStateInDevice = parentActivity.getExpectedState();
+
+        // determine how many device remote
+        expectedStateInDevice = parentActivity.getRealState();
         stateInUI = new AirPurifier();
+
+        // Get swipe refresh
+        swipeRefreshLayout = parentActivity.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                startRefresh();
+            }
+        });
+
         // Wait to update ui
         disableAllButton();
         updateUI();
@@ -142,7 +146,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 System.out.println("Getting data...");
-                monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, refreshStatusSwipe, dsIcon, dsText);
+                monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, dsIcon, dsText);
                 Thread.sleep(Constants.UPDATE_DATA_TIME * 1000); // get data for each 5s
 
             } catch (InterruptedException e) { // stop getting data
@@ -154,6 +158,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onResume() {
+        Log.i(LOG_TAG, "On resume");
         if (!monitoringThread.isAlive()){
             System.out.println("RESTARTING data...");
             monitoringThread = new Thread() {
@@ -167,12 +172,18 @@ public class HomeFragment extends Fragment {
         System.out.println("STARTING data...");
         super.onResume();
 
+        // [Hungdv39] resume update ui
+        updateUI();
     }
 
     @Override
     public void onStop() {
+        Log.i(LOG_TAG, "On stop");
         super.onStop();
         monitoringThread.interrupt(); // stop getting data
+
+        // [Hungdv39] Stop update ui
+        loopFlag = false;
     }
 
     // Hungdv39 add variable
@@ -200,18 +211,24 @@ public class HomeFragment extends Fragment {
                     stateInUI.setSpeed(SpeedState.LOW);
                     uiInLowSpeed();
                     Log.i(LOG_TAG, "low speed");
+                    // Send message to server
+                    mqttClient.changeSpeedToLow(parentActivity.getRemoteDeviceId());
                     break;
                 case R.id.bt_med_speed:
                     expectedStateInDevice.setSpeed(SpeedState.MED);
                     stateInUI.setSpeed(SpeedState.MED);
                     uiInMedSpeed();
                     Log.i(LOG_TAG, "med speed");
+                    // Send message to server
+                    mqttClient.changeSpeedToMed(parentActivity.getRemoteDeviceId());
                     break;
                 case R.id.bt_high_speed:
                     expectedStateInDevice.setSpeed(SpeedState.HIGH);
                     stateInUI.setSpeed(SpeedState.HIGH);
                     uiInHighSpeed();
                     Log.i(LOG_TAG, "high speed");
+                    // Send message to server
+                    mqttClient.changeSpeedToHigh(parentActivity.getRemoteDeviceId());
                     break;
                 default:
                     Log.i(LOG_TAG, "wrong view : " + v.getId());
@@ -231,12 +248,16 @@ public class HomeFragment extends Fragment {
                 expectedStateInDevice.setControlMode(ControlMode.AUTO);
                 loopFlag = false;
                 uiInAutoMode();
+                // Send message to server
+                mqttClient.changeControlMode(ControlMode.AUTO);
             } else {
                 // Manual mode
                 mSwitchMode.setText(R.string.mode_manual);
                 stateInUI.setControlMode(ControlMode.MANUAL);
                 expectedStateInDevice.setControlMode(ControlMode.MANUAL);
-                new updateUI().start();
+                updateUI();
+                // Send message to server
+                mqttClient.changeControlMode(ControlMode.MANUAL);
             }
         }
     };
@@ -290,6 +311,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+    }
+
+    private void uiInRefreshData() {
+        ThreadUtils.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                disableAllButton();
+            }
+        });
     }
 
     /**
@@ -380,6 +410,8 @@ public class HomeFragment extends Fragment {
         if (stateInUI.getPower() == PowerState.OFF) {
             stateInUI.setPower(PowerState.ON);
             expectedStateInDevice.setPower(PowerState.ON);
+            // Send message to the server
+            mqttClient.changeSmartPlugPower(parentActivity.getSmartPlugId());
         }
         // Value of speed in smart plug id (power + speed in device)
         Log.d(LOG_TAG, "Old_state = " + stateInUI.getSpeed().name());
@@ -394,6 +426,8 @@ public class HomeFragment extends Fragment {
             expectedStateInDevice.setPower(PowerState.OFF);
             //Set ui
             uiInPowerOff();
+            // Send message to the server
+            mqttClient.changePowerOff(parentActivity.getRemoteDeviceId());
         } else {
             // Now: power off => Set power on
             // State in ui
@@ -406,6 +440,8 @@ public class HomeFragment extends Fragment {
             //Set ui
             uiInPowerOn();
             uiInLowSpeed();
+            // Send message to the server
+            mqttClient.changePowerOn(parentActivity.getRemoteDeviceId());
         }
     }
 
@@ -442,11 +478,11 @@ public class HomeFragment extends Fragment {
      * Start update ui
      */
     public void updateUI() {
-        // start updateUI
-        new updateUI().start();
+        // start UpdateUI
+        new UpdateUI().start();
     }
 
-    private class updateUI extends Thread {
+    private class UpdateUI extends Thread {
 
         @Override
         public void run() {
@@ -502,6 +538,8 @@ public class HomeFragment extends Fragment {
                 if (!loopFlag) {
                     checkUpdate();
                 }
+                // stop refresh
+                stopRefresh();
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -538,10 +576,16 @@ public class HomeFragment extends Fragment {
         public void run() {
             // infinite loop check value
             try {
+                int diffCount = 0;
                 while(loopFlag) {
                     if (checkStateBetweenExpectedAndUI()) {
-                        showCannotRemoteDeviceDialog();
-                        updateUI();
+                        diffCount++;
+                        if (diffCount == Constants.MAX_DIFF_COUNT) {
+                            showCannotRemoteDeviceDialog();
+                            updateUI();
+                        }
+                    } else {
+                        diffCount = 0;
                     }
                     Thread.sleep(Constants.WAIT_TO_STATE_CHANGE);
                 }
@@ -550,6 +594,31 @@ public class HomeFragment extends Fragment {
             }
 
         }
+    }
+
+    /**
+     * Stop refresh in refresh layout
+     */
+    private void stopRefresh() {
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    /**
+     * Start refresh in refresh layout
+     */
+    private void startRefresh() {
+        Log.i(LOG_TAG, "Start refresh layout");
+        swipeRefreshLayout.setRefreshing(true);
+        // disable all button
+        uiInRefreshData();
+        // check information
+        parentActivity.checkInformation();
+        // Refresh data
+        monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, dsIcon, dsText);
+        // update ui
+        updateUI();
     }
 
 }

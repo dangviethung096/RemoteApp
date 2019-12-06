@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -24,14 +23,13 @@ import com.viettel.vht.remoteapp.common.PowerState;
 import com.viettel.vht.remoteapp.common.SpeedState;
 import com.viettel.vht.remoteapp.objects.AirPurifier;
 import com.viettel.vht.remoteapp.objects.RemoteDevice;
-import com.viettel.vht.remoteapp.remotecontrol.StateChecker;
-import com.viettel.vht.remoteapp.ui.home.HomeFragment;
 import com.viettel.vht.remoteapp.utilities.MqttClientToAWS;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.Menu;
@@ -51,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private RemoteDevice remoteDevice = new RemoteDevice();
     private AirPurifier realState = new AirPurifier();
     private AirPurifier expectedState = new AirPurifier();
+
 
     // Dialog alert
     private Dialog mConnectionProblemDialog, mSmartPlugProblemDialog, mInfoDeviceProblemDialog, mNoResponseFromService;
@@ -85,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setPositiveButton(R.string.bt_try_again, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
+                                            mqttClient.makeConnectionToServer();
                                             checkInformation();
                                         }
                                     })
@@ -103,7 +103,10 @@ public class MainActivity extends AppCompatActivity {
                                     .setPositiveButton(R.string.bt_try_again, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
+
+                                            mqttClient.requestAllStatesOfDevice(getSmartPlugId());
                                             checkInformation();
+
                                         }
                                     }).setNegativeButton(R.string.bt_pass, new DialogInterface.OnClickListener() {
                                         @Override
@@ -147,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create();
 
+
+
         // Get info of device
         checkInformation();
     }
@@ -163,6 +168,21 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(LOG_TAG, "On stop");
+        stopCheckValidate();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(LOG_TAG, "On resume");
+        // Resume app
+        checkInformation();
     }
 
     private void subscribeDeviceInfo() {
@@ -413,6 +433,12 @@ public class MainActivity extends AppCompatActivity {
                     });
                     return;
                 }
+
+                // Check information
+                // Reset value
+                realState.setAllNull();
+                expectedState.setAllNull();
+
                 // Subscribe information
                 subscribeDeviceInfo();
                 // Subscribe state of devices
@@ -469,15 +495,63 @@ public class MainActivity extends AppCompatActivity {
 
                 // Set expected remote control mode
                 expectedState.setControlMode(realState.getControlMode());
-
                 // Start a state checker
+//                new StateChecker(mqttClient, expectedState, realState, remoteDevice).start();
 
-                new StateChecker(mqttClient, expectedState, realState, remoteDevice).start();
+                // Check validate of connection
+                if (!loopCheckValidateFlag) {
+                    checkValidate();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
     }
+
+    private void checkValidate() {
+        loopCheckValidateFlag = true;
+        new CheckValidate().start();
+    }
+
+    private void stopCheckValidate() {
+        loopCheckValidateFlag = false;
+    }
+
+    private boolean loopCheckValidateFlag = false;
+
+    private class CheckValidate extends Thread {
+        @Override
+        public void run() {
+            int count = 0;
+            try {
+                while (loopCheckValidateFlag) {
+                    if (!mqttClient.isConnected()) {
+                        count++;
+                        if (count == Constants.MAX_NUMBER_CHECK_VALIDATE) {
+                            // Show dialog
+                            ThreadUtils.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mConnectionProblemDialog.show();
+                                }
+                            });
+                            loopCheckValidateFlag = false;
+                            break;
+                        }
+
+                    } else {
+                        count = 0;
+                    }
+                    Thread.sleep(Constants.WAIT_TO_CHECK_VALIDATE);
+                }
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+
+        }
+    }
+
+
 
     // Getter and setter
     public MqttClientToAWS getMqttClient() {

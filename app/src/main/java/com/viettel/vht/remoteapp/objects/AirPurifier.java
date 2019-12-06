@@ -46,6 +46,12 @@ public class AirPurifier {
         return true;
     }
 
+    public void setAllNull() {
+        this.power = PowerState.NULL;
+        this.speed = SpeedState.NULL;
+        this.controlMode = ControlMode.NULL;
+    }
+
     // Getter and setter
     public PowerState getPower() {
         return power;

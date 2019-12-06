@@ -42,7 +42,7 @@ public class MonitoringSystem {
 
 
     readAndDisplayStatus(final RelativeLayout vAQStatus, final TextView txtAQValue, final TextView txtAQTitle, final TextView txtAQLevel,
-                         final GridView gdView1, final GridView gdView2, final GridView gdView3, final ProgressBar loadingBar, final SwipeRefreshLayout swipeRefreshStatus, final ImageView dsIcon, final TextView dsText) {
+                         final GridView gdView1, final GridView gdView2, final GridView gdView3, final ProgressBar loadingBar, final ImageView dsIcon, final TextView dsText) {
 
         JSONObject jsonObject = new JSONObject(); // requesting json
         try {
@@ -146,7 +146,6 @@ public class MonitoringSystem {
                             }
 
                             loadingBar.setVisibility(View.GONE); // disable the loading bar
-//                            swipeRefreshStatus.setRefreshing(false);
 
                         } catch (Exception e) {
                             e.printStackTrace();
