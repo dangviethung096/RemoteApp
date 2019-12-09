@@ -423,6 +423,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
+                // Reset value
+                realState.setAllNull();
+                expectedState.setAllNull();
+
+                // Check connection
                 if (!checkMqttConnection()) {
                     ThreadUtils.runOnUiThread(new Runnable() {
                         @Override
@@ -434,10 +439,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // Check information
-                // Reset value
-                realState.setAllNull();
-                expectedState.setAllNull();
-
                 // Subscribe information
                 subscribeDeviceInfo();
                 // Subscribe state of devices
@@ -549,7 +550,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
 
     // Getter and setter

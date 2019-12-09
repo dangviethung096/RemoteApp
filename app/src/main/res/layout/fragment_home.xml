@@ -185,7 +185,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.98">
+        app:layout_constraintVertical_bias="0.95">
 
         <GridView
             android:id="@+id/gdHTP"
@@ -204,7 +204,7 @@
             android:layout_below="@id/gdHTP"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="25dp"
             android:numColumns="3"
             android:paddingLeft="10dp"
             android:paddingVertical="20dp"

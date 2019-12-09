@@ -2,8 +2,13 @@ package com.viettel.vht.remoteapp.ui.home;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +53,11 @@ public class HomeFragment extends Fragment {
     private MainActivity parentActivity;
     private MqttClientToAWS mqttClient;
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    // Sound button
+    private MediaPlayer soundButton;
+    // Vibrator when click button
+    private Vibrator vibrator;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,6 +141,11 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Get sound button
+        soundButton = MediaPlayer.create(parentActivity, R.raw.sample_2);
+        // Get vibrate
+        vibrator = (Vibrator) parentActivity.getSystemService(Context.VIBRATOR_SERVICE);
+
         // Wait to update ui
         disableAllButton();
         updateUI();
@@ -198,6 +213,14 @@ public class HomeFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Log.d(LOG_TAG, "Click power button");
+            // Sound and vibrator
+            soundButton.start();
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(200);
+            }
+            // Start work flow
             power(v);
         }
     };
@@ -205,6 +228,14 @@ public class HomeFragment extends Fragment {
     View.OnClickListener btSpeedClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            // Sound and vibrator
+            soundButton.start();
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(200);
+            }
+            // Workflow
             switch(v.getId()) {
                 case R.id.bt_low_speed:
                     expectedStateInDevice.setSpeed(SpeedState.LOW);

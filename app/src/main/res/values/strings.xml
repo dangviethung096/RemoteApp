@@ -3,18 +3,18 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Máy lọc không khí</string>
-    <string name="nav_header_subtitle">Trung tâm nghiên cứu thiết bị Y Tế (viettel)</string>
+    <string name="nav_header_subtitle">Trung tâm nghiên cứu thiết bị Y Tế (VHT)</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">Màn hình chính</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
+    <string name="menu_tools">Công cụ</string>
+    <string name="menu_share">Chia sẻ</string>
     <string name="menu_send">Send</string>
-    <string name="air_status">Air Status</string>
-    <string name="menu_remote_control">Remote Control</string>
+    <string name="air_status">Tình trạng không khí</string>
+    <string name="menu_remote_control">Điều khiển từ xa</string>
     <string name="menu_air_remote_control">Điểu khiển máy lọc không khí</string>
 
 <!--    String for fan mitsubishi-->
@@ -50,8 +50,8 @@
     <string name="state_3">Mạnh</string>
     <string name="speed_title">Tốc độ</string>
     <string name="power_title">Nguồn</string>
-    <string name="state_power_on">ON</string>
-    <string name="state_power_off">OFF</string>
+    <string name="state_power_on">Bật</string>
+    <string name="state_power_off">Tắt</string>
 
 
 <!--    String for test-->

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">vAirPurifier</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Air purifier</string>
+    <string name="nav_header_subtitle">Medical Devices Research Center (VHT)</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="air_status">Air Status</string>
+    <string name="menu_remote_control">Remote Control</string>
+    <string name="menu_air_remote_control">Air Purifier Remote</string>
+
+    <!--    String for fan mitsubishi-->
+    <string name="fan_mitsubishi">Mitsubishi LV16-RT</string>
+    <!--    String for button in fan mitsubishi-->
+    <string name="bt_connect">Connect</string>
+    <string name="fan_speed">Speed</string>
+    <string name="fan_power">On/Off</string>
+    <string name="fan_swing">Swing</string>
+    <string name="fan_rhythm">Rhythm</string>
+    <string name="fan_timer">Timer off</string>
+
+    <!--    String for status screen in remote control-->
+    <string name="connecting_status">Connecting</string>
+    <string name="connected_status">Connected</string>
+    <string name="bt_try_again">Try again</string>
+    <string name="bt_pass">Discard</string>
+    <string name="msg_lost_connection">Cannot connect to server (Please check the connection)</string>
+    <string name="title_lost_connection">Lost connection</string>
+    <string name="msg_no_response_from_device">Device doesn\'t response or Server doesn\'t response!\nPlease contact to tamnd12@viettel.com.vn or tuanvd10@viettel.com.vn</string>
+    <string name="msg_no_response_from_service">Server does\'not response!\n Please contact to tuanvd10@viettel.com.vn</string>
+    <string name="check_smart_plug_and_remote">Please check smart plug or remote devices</string>
+    <string name="not_connected">Not connected</string>
+    <string name="error">Error</string>
+    <string name="info">Info</string>
+    <string name="OK">OK</string>
+    <string name="error_not_found_device_id">Cannot find the remote device</string>
+    <string name="cannot_remote_device">Cannot remote the device</string>
+    <!--    String for state in air condition-->
+    <string name="air_purifier">Air purifier</string>
+    <string name="state_1">Low</string>
+    <string name="state_2">Medium</string>
+    <string name="state_3">High</string>
+    <string name="speed_title">Speed</string>
+    <string name="power_title">Power</string>
+    <string name="state_power_on">ON</string>
+    <string name="state_power_off">OFF</string>
+
+
+    <!--    String for test-->
+    <string name="test">Test</string>
+    <string name="test_number">0</string>
+
+    <!-- String for Air Parameter -->
+    <string name="AQ">AQ</string>
+    <string name="CO2">CO\u2082</string>
+    <string name="H2CO">CH\u2082O</string>
+    <string name="HM">Humidity</string>
+    <string name="Pressure">Pressure</string>
+    <string name="Temperature">Temperature</string>
+    <string name="VOC">VOC</string>
+    <string name="PM1">PM1</string>
+    <string name="PM10">PM10</string>
+    <string name="PM25">PM2.5</string>
+
+    <string name="good">Good</string>
+    <string name="mod">Moderate</string>
+    <string name="poor">Poor</string>
+    <string name="power_on">On</string>
+    <string name="power_off">Off</string>
+    <string name="uv_on">UV on</string>
+    <string name="uv_off">UV off</string>
+
+    <string name="online">Online</string>    // online status
+    <string name="active">Active</string> // active time
+
+    <string name="name_device">Device name</string>
+    <string name="state_of_device">Device Status</string>
+    <string name="speed_of_device">Fan Speed</string>
+
+    <string name="speed_0">0</string>
+    <string name="speed_1">1</string>
+    <string name="speed_2">2</string>
+    <string name="speed_3">3</string>
+
+    <string name="status_title">Status</string>
+
+    <string name="mode_auto">Auto</string>
+    <string name="mode_manual">Manual</string>
+
+    // resource for layout
+    <string name="margin_remote_button_with_center">20dp</string>
+
+</resources>
