@@ -65,9 +65,9 @@ public class MonitoringGridAdapter extends BaseAdapter {
         VectorDrawable vectorDrawable = (VectorDrawable) ResourcesCompat.getDrawable(context.getResources(), getDrawableResIdByName(status.getIconName()), null);
         holder.flagView.setImageDrawable(vectorDrawable);
         // set color
-        //holder.txtParameter.setTextColor(context.getResources().getColor(getColorIdByName(status.getQualityLevel().toColor()), null));
-      //  holder.txtValue.setTextColor(context.getResources().getColor(getColorIdByName(status.getQualityLevel().toColor()), null));
-      //  holder.txtUnit.setTextColor(context.getResources().getColor(getColorIdByName(status.getQualityLevel().toColor()), null));
+        // holder.txtParameter.setTextColor(context.getResources().getColor(getColorIdByName(status.getQualityLevel().toColor()), null));
+        // holder.txtValue.setTextColor(context.getResources().getColor(getColorIdByName(status.getQualityLevel().toColor()), null));
+        // holder.txtUnit.setTextColor(context.getResources().getColor(getColorIdByName(status.getQualityLevel().toColor()), null));
         holder.flagView.setColorFilter(context.getResources().getColor(getColorIdByName(status.getQualityLevel().toColor()), null));
 
         return convertView;

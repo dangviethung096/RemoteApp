@@ -25,7 +25,11 @@ public class Constants {
 
     public static final int MAX_TRY_REQUEST = 1;
 
-    public static final int MAX_DIFF_COUNT = 8;
+    public static final int MAX_DIFF_COUNT_IN_MANUAL = 2;
+
+    public static final int MAX_DIFF_COUNT_IN_AUTO = 1;
+
+    public static final int MAX_CHECK_UPDATE_HOME_UI = 15;
 
     public static final int CHECK_DIFFERENCE_LOOP_NUMBER = 1;
     public static final long CHECK_DIFFERENCE_SLEEP_TIME = 1000L;

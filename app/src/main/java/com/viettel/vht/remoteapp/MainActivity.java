@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                                     .setNegativeButton(R.string.bt_pass, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-
                                         }
                                     })
                                     .create();

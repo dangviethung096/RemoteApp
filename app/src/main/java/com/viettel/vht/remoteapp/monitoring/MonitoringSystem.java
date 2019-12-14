@@ -38,10 +38,7 @@ public class MonitoringSystem {
         httpRequest = new MonitoringRequest(activity.getApplicationContext());
     }
 
-    public void
-
-
-    readAndDisplayStatus(final RelativeLayout vAQStatus, final TextView txtAQValue, final TextView txtAQTitle, final TextView txtAQLevel,
+    public void readAndDisplayStatus(final RelativeLayout vAQStatus, final TextView txtAQValue, final TextView txtAQTitle, final TextView txtAQLevel,
                          final GridView gdView1, final GridView gdView2, final GridView gdView3, final ProgressBar loadingBar, final ImageView dsIcon, final TextView dsText) {
 
         JSONObject jsonObject = new JSONObject(); // requesting json
@@ -64,6 +61,7 @@ public class MonitoringSystem {
                             for (int i = 0; i < listStatus.size(); i++) {
                                 if (mesuareTime == null)
                                     mesuareTime = DateUtils.getRelativeTimeSpanString(extractTime(jsonObject.getString(listStatus.get(i).getDataPointID())));
+
                                 if (jsonObject.getString(listStatus.get(i).getDataPointID()) != null) {
                                     listStatus.get(i).setValue(extractMeasurement(jsonObject.getString(listStatus.get(i).getDataPointID())));
                                     calculateQualityLevel(listStatus.get(i));

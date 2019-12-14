@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment {
         });
 
         // Get sound button
-        soundButton = MediaPlayer.create(parentActivity, R.raw.sample_2);
+        soundButton = MediaPlayer.create(parentActivity, R.raw.sample_3);
         // Get vibrate
         vibrator = (Vibrator) parentActivity.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -410,6 +410,34 @@ public class HomeFragment extends Fragment {
         });
     }
 
+
+    private void uiInAutoLowSpeed() {
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_green_round, null));
+        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bt_blue_round, null));
+        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+    }
+
+    private void uiInAutoMedSpeed() {
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_green_round, null));
+        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bt_blue_round, null));
+        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+    }
+
+    private void uiInAutoHighSpeed() {
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_green_round, null));
+        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bt_blue_round, null));
+    }
+
+    private void uiInAutoPowerOff() {
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_red_round, null));
+        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+    }
     /**
      * Disable all button except switch button
      */
@@ -421,6 +449,24 @@ public class HomeFragment extends Fragment {
                 mSwitchMode.setEnabled(true);
                 mSwitchMode.setChecked(true);
                 mSwitchMode.setText(R.string.mode_auto);
+
+                switch (expectedStateInDevice.getSpeed()) {
+                    case OFF:
+                        uiInAutoPowerOff();
+                        break;
+                    case LOW:
+                        uiInAutoLowSpeed();
+                        break;
+                    case MED:
+                        uiInAutoMedSpeed();
+                        break;
+                    case HIGH:
+                        uiInAutoHighSpeed();
+                        break;
+                    default:
+                        Log.e(LOG_TAG, "Wrong value in speed in auto mode");
+                        break;
+                }
             }
         });
     }
@@ -515,19 +561,46 @@ public class HomeFragment extends Fragment {
 
     private class UpdateUI extends Thread {
 
+        private boolean checkVisibilityUI() throws InterruptedException {
+            for (int i = 0; i < Constants.MAX_CHECK_UPDATE_HOME_UI; i++) {
+                // Check validate and break loop
+                if (loadingBar.getVisibility() != View.VISIBLE) {
+                    return true;
+                }
+
+                Thread.sleep(Constants.WAIT_TO_UPDATE_UI);
+            }
+
+            return false;
+        }
+
+        private boolean checkNullValue() throws InterruptedException {
+            for (int i = 0; i < Constants.MAX_CHECK_UPDATE_HOME_UI; i++) {
+                // Check validate and break loop
+                if (expectedStateInDevice.isNotNull()) {
+                    return true;
+                }
+
+                Thread.sleep(Constants.WAIT_TO_UPDATE_UI);
+            }
+
+            return false;
+        }
+
         @Override
         public void run() {
             try {
-                while(loadingBar.getVisibility() == View.VISIBLE) {
-                    Thread.sleep(Constants.WAIT_TO_UPDATE_UI);
+                // Check visibility on ui
+                if (!checkVisibilityUI()) {
+                    return;
                 }
 
                 // Visiable all button
                 setVisibleAllButton();
 
                 // Wait until complete load
-                while(!expectedStateInDevice.isNotNull()) {
-                    Thread.sleep(Constants.WAIT_TO_UPDATE_UI);
+                if (!checkNullValue()) {
+                    return;
                 }
 
                 // set ui state
@@ -569,10 +642,12 @@ public class HomeFragment extends Fragment {
                 if (!loopFlag) {
                     checkUpdate();
                 }
-                // stop refresh
-                stopRefresh();
+
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
+            } finally {
+                // stop refresh
+                stopRefresh();
             }
 
         }
@@ -606,19 +681,32 @@ public class HomeFragment extends Fragment {
         @Override
         public void run() {
             // infinite loop check value
+            int thresholdDifference = Constants.MAX_DIFF_COUNT_IN_MANUAL;
+
             try {
                 int diffCount = 0;
                 while(loopFlag) {
+                    // Wait to update ui
+                    if (stateInUI.getControlMode() == ControlMode.AUTO) {
+                        // Wait to update ui in auto mode
+                        thresholdDifference = Constants.MAX_DIFF_COUNT_IN_AUTO;
+                        Thread.sleep(Constants.WAIT_TO_UPDATE_UI);
+                    } else {
+                        // Wait to update ui in manual mode
+                        thresholdDifference = Constants.MAX_DIFF_COUNT_IN_MANUAL;
+                        Thread.sleep(Constants.WAIT_TO_STATE_CHANGE);
+                    }
+
+                    // Check difference
                     if (checkStateBetweenExpectedAndUI()) {
                         diffCount++;
-                        if (diffCount == Constants.MAX_DIFF_COUNT) {
+                        if (diffCount == thresholdDifference) {
 //                            showCannotRemoteDeviceDialog();
                             updateUI();
                         }
                     } else {
                         diffCount = 0;
                     }
-                    Thread.sleep(Constants.WAIT_TO_STATE_CHANGE);
                 }
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
@@ -630,7 +718,7 @@ public class HomeFragment extends Fragment {
     /**
      * Stop refresh in refresh layout
      */
-    private void stopRefresh() {
+    public void stopRefresh() {
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }

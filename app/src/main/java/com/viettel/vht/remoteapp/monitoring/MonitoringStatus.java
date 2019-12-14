@@ -58,5 +58,4 @@ public class MonitoringStatus {
         this.qualityLevel = qualityLevel;
     }
 
-
 }
