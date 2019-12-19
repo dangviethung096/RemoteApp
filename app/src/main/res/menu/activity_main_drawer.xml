@@ -6,13 +6,13 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_dashboard"
+            android:icon="@drawable/ic_home"
             android:title="@string/menu_home" />
 
-<!--        <item-->
-<!--            android:id="@+id/nav_remote_control"-->
-<!--            android:icon="@drawable/ic_remote_control"-->
-<!--            android:title="@string/menu_remote_control"/>-->
+        <item
+            android:id="@+id/nav_infomation"
+            android:icon="@drawable/ic_threshold"
+            android:title="@string/menu_information"/>
 
 <!--        <item-->
 <!--            android:id="@+id/nav_air_remote_control"-->

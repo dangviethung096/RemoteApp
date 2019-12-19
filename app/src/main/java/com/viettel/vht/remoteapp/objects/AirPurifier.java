@@ -2,6 +2,8 @@ package com.viettel.vht.remoteapp.objects;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.viettel.vht.remoteapp.common.ControlMode;
 import com.viettel.vht.remoteapp.common.PowerState;
 import com.viettel.vht.remoteapp.common.SpeedState;
@@ -91,5 +93,11 @@ public class AirPurifier {
                 Log.e(LOG_TAG, "wrong speed from setPowerFromSpeed");
                 break;
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "power = " + power.name() + ", speed = " + speed.name() + ", control mode = " + controlMode.name();
     }
 }

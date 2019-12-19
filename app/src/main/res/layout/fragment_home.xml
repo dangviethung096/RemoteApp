@@ -92,7 +92,7 @@
             android:layout_height="75sp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/bg_power_on_bt"
+            android:background="@drawable/bt_grey_round"
             android:foreground="@drawable/bt_power"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@id/aq_status"
@@ -144,7 +144,7 @@
             android:id="@+id/sw_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/mode_manual"
+            android:text="@string/mode_loading"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />

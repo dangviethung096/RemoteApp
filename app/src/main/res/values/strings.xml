@@ -16,6 +16,7 @@
     <string name="air_status">Tình trạng không khí</string>
     <string name="menu_remote_control">Điều khiển từ xa</string>
     <string name="menu_air_remote_control">Điểu khiển máy lọc không khí</string>
+    <string name="menu_information">Ngưỡng đo</string>
 
 <!--    String for fan mitsubishi-->
     <string name="fan_mitsubishi">Mitsubishi LV16-RT</string>
@@ -69,6 +70,7 @@
     <string name="PM1">PM1</string>
     <string name="PM10">PM10</string>
     <string name="PM25">PM2.5</string>
+    <string name="PM">PM</string>
 
     <string name="good">Tốt</string>
     <string name="mod">Khá</string>
@@ -94,8 +96,17 @@
 
     <string name="mode_auto">Tự động</string>
     <string name="mode_manual">Thủ công</string>
+    <string name="mode_loading">Đang tải</string>
 
     // resource for layout
     <string name="margin_remote_button_with_center">20dp</string>
+
+    // Information of threshold
+    <string name="info_aqi">Chất lượng không khí</string>
+    <string name="info_aqi_content">Điểm số chất lượng không khí theo theo thời gian thực được xác định bởi dữ liệu được lấy bở thiết bị Airthix IAQ và các giải thuật nâng cao nhằm cung cấp cho người sử dụng một cái nhìn tổng quan về chất lượng không khí trong nhà của họ</string>
+
+    <string name="info_header">Chỉ số</string>
+
+    <string name="info_threshold">Thông tin ngưỡng</string>
 
 </resources>

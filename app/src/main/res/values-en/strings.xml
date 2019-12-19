@@ -17,6 +17,7 @@
     <string name="air_status">Air Status</string>
     <string name="menu_remote_control">Remote Control</string>
     <string name="menu_air_remote_control">Air Purifier Remote</string>
+    <string name="menu_information">Threshold</string>
 
     <!--    String for fan mitsubishi-->
     <string name="fan_mitsubishi">Mitsubishi LV16-RT</string>
@@ -70,6 +71,7 @@
     <string name="PM1">PM1</string>
     <string name="PM10">PM10</string>
     <string name="PM25">PM2.5</string>
+    <string name="PM">PM</string>
 
     <string name="good">Good</string>
     <string name="mod">Moderate</string>
@@ -95,8 +97,19 @@
 
     <string name="mode_auto">Auto</string>
     <string name="mode_manual">Manual</string>
+    <string name="mode_loading">Loading</string>
 
     // resource for layout
     <string name="margin_remote_button_with_center">20dp</string>
+
+    // Information of threshold
+    <string name="info_aqi">Air Quality Score</string>
+    <string name="info_aqi_content">Real-time air quality score is determined by the data acquired by the Airthix IAQ device and advanced algorithms, providing users with a quick overview of the their indoor air quality score.</string>
+
+    <string name="info_header">Index</string>
+
+    <string name="info_threshold">Threshold</string>
+
+
 
 </resources>

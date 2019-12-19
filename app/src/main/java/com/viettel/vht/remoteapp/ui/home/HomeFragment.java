@@ -82,7 +82,6 @@ public class HomeFragment extends Fragment {
         dsIcon = (ImageView) root.findViewById(R.id.ds_icon);
         dsText = (TextView) root.findViewById(R.id.ds_text);
 
-
         // getting data in another thread
         monitoringThread = new Thread() {
             @Override
@@ -134,6 +133,7 @@ public class HomeFragment extends Fragment {
 
         // Get swipe refresh
         swipeRefreshLayout = parentActivity.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setEnabled(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -277,19 +277,34 @@ public class HomeFragment extends Fragment {
                 mSwitchMode.setText(R.string.mode_auto);
                 stateInUI.setControlMode(ControlMode.AUTO);
                 expectedStateInDevice.setControlMode(ControlMode.AUTO);
-                loopFlag = false;
-                uiInAutoMode();
                 // Send message to server
                 mqttClient.changeControlMode(ControlMode.AUTO);
+                // Disable all button except switch
+                parentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        disableControlButton();
+                    }
+                });
             } else {
                 // Manual mode
                 mSwitchMode.setText(R.string.mode_manual);
                 stateInUI.setControlMode(ControlMode.MANUAL);
                 expectedStateInDevice.setControlMode(ControlMode.MANUAL);
-                updateUI();
                 // Send message to server
                 mqttClient.changeControlMode(ControlMode.MANUAL);
+                // Enable all button
+                parentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        enableControlButton();
+                    }
+                });
             }
+
+
+            // Get mode control
+            mqttClient.requestGetCurrentControlMode();
         }
     };
 
@@ -315,8 +330,7 @@ public class HomeFragment extends Fragment {
      * Disable all button
      */
     private void disableAllButton() {
-        mBtPower.setEnabled(false);
-        mSwitchMode.setEnabled(false);
+        disableControlButton();
         disableSpeedButton();
     }
 
@@ -324,9 +338,18 @@ public class HomeFragment extends Fragment {
      * Enable all button
      */
     private void enableAllButton() {
-        mBtPower.setEnabled(true);
-        mSwitchMode.setEnabled(true);
+        enableControlButton();
         enableSpeedButton();
+    }
+
+    private void enableControlButton() {
+        mBtPower.setEnabled(true);
+        enableSpeedButton();
+    }
+
+    private void disableControlButton() {
+        mBtPower.setEnabled(false);
+        disableSpeedButton();
     }
     /**
      * ui in power on
@@ -349,6 +372,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void run() {
                 disableAllButton();
+                uiInLoadingMode();
             }
         });
     }
@@ -366,10 +390,17 @@ public class HomeFragment extends Fragment {
                 // Enable power button
                 mBtPower.setEnabled(true);
                 mBtPower.setBackground(getResources().getDrawable(R.drawable.bg_power_off_bt, null));
+                // Unselect all speed button
+                unSelectAllSpeedButton();
             }
         });
     }
 
+    private void unSelectAllSpeedButton() {
+        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+    }
 
     private void uiInLowSpeed() {
         // Disable speed button
@@ -412,31 +443,45 @@ public class HomeFragment extends Fragment {
 
 
     private void uiInAutoLowSpeed() {
-        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_green_round, null));
-        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bt_blue_round, null));
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bg_power_on_bt, null));
+        // Low
+        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_selected_speed_bt, null));
         mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
         mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
     }
 
     private void uiInAutoMedSpeed() {
-        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_green_round, null));
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bg_power_on_bt, null));
         mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
-        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bt_blue_round, null));
+        // Med
+        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_selected_speed_bt, null));
         mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
     }
 
     private void uiInAutoHighSpeed() {
-        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_green_round, null));
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bg_power_on_bt, null));
         mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
         mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
-        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bt_blue_round, null));
+        // High
+        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_selected_speed_bt, null));
     }
 
     private void uiInAutoPowerOff() {
-        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_red_round, null));
+        // Off power
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bg_power_off_bt, null));
         mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
         mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
         mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bg_speed_bt, null));
+    }
+
+
+    private void uiInLoadingMode() {
+        // Loading mode
+        mBtPower.setBackground(getResources().getDrawable(R.drawable.bt_grey_round, null));
+        mBtLowSpeed.setBackground(getResources().getDrawable(R.drawable.bt_grey_round, null));
+        mBtMedSpeed.setBackground(getResources().getDrawable(R.drawable.bt_grey_round, null));
+        mBtHighSpeed.setBackground(getResources().getDrawable(R.drawable.bt_grey_round, null));
+        mSwitchMode.setText(R.string.mode_loading);
     }
     /**
      * Disable all button except switch button
@@ -449,23 +494,27 @@ public class HomeFragment extends Fragment {
                 mSwitchMode.setEnabled(true);
                 mSwitchMode.setChecked(true);
                 mSwitchMode.setText(R.string.mode_auto);
-
-                switch (expectedStateInDevice.getSpeed()) {
-                    case OFF:
-                        uiInAutoPowerOff();
-                        break;
-                    case LOW:
-                        uiInAutoLowSpeed();
-                        break;
-                    case MED:
-                        uiInAutoMedSpeed();
-                        break;
-                    case HIGH:
-                        uiInAutoHighSpeed();
-                        break;
-                    default:
-                        Log.e(LOG_TAG, "Wrong value in speed in auto mode");
-                        break;
+                // Check power on device
+                if (expectedStateInDevice.getPower() == PowerState.OFF) {
+                    uiInAutoPowerOff();
+                } else {
+                    switch (expectedStateInDevice.getSpeed()) {
+                        case OFF:
+                            uiInAutoPowerOff();
+                            break;
+                        case LOW:
+                            uiInAutoLowSpeed();
+                            break;
+                        case MED:
+                            uiInAutoMedSpeed();
+                            break;
+                        case HIGH:
+                            uiInAutoHighSpeed();
+                            break;
+                        default:
+                            Log.e(LOG_TAG, "Wrong value in speed in auto mode");
+                            break;
+                    }
                 }
             }
         });
@@ -542,6 +591,10 @@ public class HomeFragment extends Fragment {
      * @return
      */
     private boolean checkStateBetweenExpectedAndUI() {
+        Log.d(LOG_TAG, "checkStateBetweenExpectedAndUI\nexpected state : "
+                + expectedStateInDevice.toString() + "\nui state: " + stateInUI.toString());
+
+        // Check difference
         if (expectedStateInDevice.getControlMode() != stateInUI.getControlMode() ||
             expectedStateInDevice.getPower() != stateInUI.getPower() ||
             expectedStateInDevice.getSpeed() != stateInUI.getSpeed()) {
@@ -614,7 +667,7 @@ public class HomeFragment extends Fragment {
                     uiInAutoMode();
                 } else {
                     // manual mode
-                   uiInManualMode();
+                    uiInManualMode();
                     // Check speed and power
                     if (expectedStateInDevice.getSpeed() == SpeedState.OFF) {
                         // off device
@@ -685,12 +738,14 @@ public class HomeFragment extends Fragment {
 
             try {
                 int diffCount = 0;
+                Log.i(LOG_TAG, "Start loop");
                 while(loopFlag) {
+                    Log.d(LOG_TAG, "Control mode = " + stateInUI.getControlMode().name());
                     // Wait to update ui
                     if (stateInUI.getControlMode() == ControlMode.AUTO) {
                         // Wait to update ui in auto mode
                         thresholdDifference = Constants.MAX_DIFF_COUNT_IN_AUTO;
-                        Thread.sleep(Constants.WAIT_TO_UPDATE_UI);
+                        Thread.sleep(Constants.WAIT_TO_STATE_CHANGE);
                     } else {
                         // Wait to update ui in manual mode
                         thresholdDifference = Constants.MAX_DIFF_COUNT_IN_MANUAL;
@@ -700,14 +755,18 @@ public class HomeFragment extends Fragment {
                     // Check difference
                     if (checkStateBetweenExpectedAndUI()) {
                         diffCount++;
-                        if (diffCount == thresholdDifference) {
+                        if (diffCount >= thresholdDifference) {
 //                            showCannotRemoteDeviceDialog();
                             updateUI();
+                            // reset diffCount
+                            diffCount = 0;
                         }
                     } else {
                         diffCount = 0;
                     }
                 }
+
+                Log.i(LOG_TAG, "End of checker loop");
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
