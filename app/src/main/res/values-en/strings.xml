@@ -99,10 +99,10 @@
     <string name="mode_manual">Manual</string>
     <string name="mode_loading">Loading</string>
 
-    // resource for layout
+    <!--resource for layout-->
     <string name="margin_remote_button_with_center">20dp</string>
 
-    // Information of threshold
+    <!--Information of threshold-->
     <string name="info_aqi">Air Quality Score</string>
     <string name="info_aqi_content">Real-time air quality score is determined by the data acquired by the Airthix IAQ device and advanced algorithms, providing users with a quick overview of the their indoor air quality score.</string>
 
@@ -110,6 +110,51 @@
 
     <string name="info_threshold">Threshold</string>
 
+    <!--Threshold-->
+    <!--Pm-->
+    <string name="info_header_pm">Particulate Matter (PM)</string>
+    <string name="info_good_pm">Less than 25.4 µg/m³</string>
+    <string name="info_mod_pm">From 25.4 µg/m³ to 55.4 µg/m³</string>
+    <string name="info_poor_pm">Greater than 55.4 µg/m³</string>
+
+    <!--Temperature-->
+    <string name="info_header_temperature">Temperature</string>
+    <string name="info_poor_temperature">Greater than 30 ℃ or less than 16 ℃</string>
+    <string name="info_mod_temperature">From 16 ℃ to 20 ℃\nFrom 24.4 ℃ to 30 ℃</string>
+    <string name="info_good_temperature">Poor - From 20 ℃ to 24.4 ℃</string>
+    <!--Humidity-->
+    <string name="info_header_humidity">Humidity</string>
+    <string name="info_poor_humidity">Less than 30% or greater than 65%</string>
+    <string name="info_mod_humidity">From 30% to 45%\nFrom 60% to 65%</string>
+    <string name="info_good_humidity">From 45% to 60%</string>
+    <!--Co2-->
+    <string name="info_header_co2">Carbon Dioxide CO\u2082</string>
+    <string name="info_poor_co2">Greater than 1100 ppm</string>
+    <string name="info_mod_co2">From 850 ppm to 1100 ppm</string>
+    <string name="info_good_co2">Less than 850 ppm</string>
+
+    <!--CH2O-->
+    <string name="info_header_ch2o">Formaldehyde (CH\u2082O)</string>
+    <string name="info_poor_ch2o">Greater than 0.12 mg/m³</string>
+    <string name="info_mod_ch2o">From 0.05 mg/m³ to 0.12 mg/m³</string>
+    <string name="info_good_ch2o">Less than 0.05 mg/m³</string>
+
+    <!--VOC-->
+    <string name="info_header_vooc">VOC</string>
+    <string name="info_poor_vooc">Greater than 2 ppm</string>
+    <string name="info_mod_vooc">From 1 ppm to 2 ppm</string>
+    <string name="info_good_vooc">Less than 1 ppm</string>
+
+    <!--AQ-->
+    <string name="info_header_aq">Air Quality (AQ)</string>
+    <string name="info_poor_aq">Less than 80</string>
+    <string name="info_mod_aq">From 80 to 89</string>
+    <string name="info_good_aq">Greater than 89</string>
+
+    <!--Title-->
+    <string name="good_title">Good -</string>
+    <string name="mod_title">Moderate -</string>
+    <string name="poor_title">Poor -</string>
 
 
 </resources>

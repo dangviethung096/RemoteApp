@@ -779,7 +779,13 @@ public class HomeFragment extends Fragment {
      */
     public void stopRefresh() {
         if (swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(false);
+            parentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
+
         }
     }
 
@@ -788,7 +794,14 @@ public class HomeFragment extends Fragment {
      */
     private void startRefresh() {
         Log.i(LOG_TAG, "Start refresh layout");
-        swipeRefreshLayout.setRefreshing(true);
+        // Start refresh
+        parentActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        });
+
         // disable all button
         uiInRefreshData();
         // check information

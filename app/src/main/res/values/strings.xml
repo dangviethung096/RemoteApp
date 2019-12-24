@@ -98,10 +98,10 @@
     <string name="mode_manual">Thủ công</string>
     <string name="mode_loading">Đang tải</string>
 
-    // resource for layout
+    <!--resource for layout-->
     <string name="margin_remote_button_with_center">20dp</string>
 
-    // Information of threshold
+    <!--Information of threshold-->
     <string name="info_aqi">Chất lượng không khí</string>
     <string name="info_aqi_content">Điểm số chất lượng không khí theo theo thời gian thực được xác định bởi dữ liệu được lấy bở thiết bị Airthix IAQ và các giải thuật nâng cao nhằm cung cấp cho người sử dụng một cái nhìn tổng quan về chất lượng không khí trong nhà của họ</string>
 
@@ -109,4 +109,47 @@
 
     <string name="info_threshold">Thông tin ngưỡng</string>
 
+    <!--Threshold-->
+    <!--Pm-->
+    <string name="info_header_pm">Bụi mịn (PM)</string>
+    <string name="info_good_pm">Nhỏ hơn 25.4 µg/m³</string>
+    <string name="info_mod_pm">Từ 25.4 µg/m³ đến 55.4 µg/m³</string>
+    <string name="info_poor_pm">Lớn hơn 55.4 µg/m³</string>
+    <!--Temperature-->
+    <string name="info_header_temperature">Nhiệt độ</string>
+    <string name="info_poor_temperature">Lớn hơn 30 ℃ hoặc nhỏ hơn 16 ℃</string>
+    <string name="info_mod_temperature">Từ 16 ℃ đến 20 ℃\nTừ 24.4 ℃ đến 30 ℃</string>
+    <string name="info_good_temperature">Từ 20 ℃ đến 24.4 ℃</string>
+    <!--Humidity-->
+    <string name="info_header_humidity">Độ ẩm</string>
+    <string name="info_poor_humidity">Nhỏ hơn 30% hoặc lớn hơn 65%</string>
+    <string name="info_mod_humidity">Từ 30% đến 45%\nTừ 60% đến 65%</string>
+    <string name="info_good_humidity">Từ 45% đến 60%</string>
+    <!--Co2-->
+    <string name="info_header_co2">Nồng độ CO\u2082</string>
+    <string name="info_poor_co2">Lớn hơn 1100 ppm</string>
+    <string name="info_mod_co2">Từ 850 ppm đến 1100 ppm</string>
+    <string name="info_good_co2">Nhỏ hơn 850 ppm</string>
+
+    <!--CH2O-->
+    <string name="info_header_ch2o">Nồng độ Formaldehyde (CH\u2082O)</string>
+    <string name="info_poor_ch2o">Lớn hơn 0.12 mg/m³</string>
+    <string name="info_mod_ch2o">Từ 0.05 mg/m³ đến 0.12 mg/m³</string>
+    <string name="info_good_ch2o">Nhỏ hơn 0.05 mg/m³</string>
+
+    <!--VOC-->
+    <string name="info_header_vooc">Nồng độ VOC</string>
+    <string name="info_poor_vooc">Lớn hơn 2 ppm</string>
+    <string name="info_mod_vooc">Từ 1 ppm đến 2 ppm</string>
+    <string name="info_good_vooc">Nhỏ hơn 1 ppm</string>
+
+    <!--AQ-->
+    <string name="info_header_aq">Chất lượng không khí (AQ)</string>
+    <string name="info_poor_aq">Nhỏ hơn 80</string>
+    <string name="info_mod_aq">Từ 80 đến 89</string>
+    <string name="info_good_aq">Lớn hơn 89</string>
+
+    <string name="good_title">Tốt -</string>
+    <string name="mod_title">Khá -</string>
+    <string name="poor_title">Kém -</string>
 </resources>

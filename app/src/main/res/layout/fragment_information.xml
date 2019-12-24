@@ -9,193 +9,616 @@
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="50dp"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/info_threshold"
         android:gravity="center"
-        android:textSize="25dp"
+        android:textSize="30dp"
         style="@style/HeaderCellTable"
         android:textColor="@color/Black"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintVertical_bias="1.0">
 
-        <TableLayout
-            android:id="@+id/tb_information"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:shrinkColumns="*"
-            android:stretchColumns="*">
+            android:layout_height="match_parent">
 
-            <!--1-->
-            <TableRow
-                style="@style/TableRowStyle"
-                android:layout_width="match_parent">
-                <TextView
-                    android:text="@string/info_header"
-                    style="@style/HeaderCellTable"
-                    android:layout_column="0" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/pm_threshold"
+                style="@style/IndexStyle"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:text="@string/poor"
-                    android:layout_column="1"
-                    style="@style/HeaderCellTable"
-                    android:background="@color/Red" />
+                    android:id="@+id/pm_header"
+                    style="@style/HeaderStyle"
+                    android:text="@string/info_header_pm"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/pm_good"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/good_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pm_header" />
 
                 <TextView
-                    android:text="@string/mod"
-                    style="@style/HeaderCellTable"
-                    android:layout_column="2"
-                    android:background="@color/Yellow" />
-
-
-                <TextView
-                    android:text="@string/good"
-                    style="@style/HeaderCellTable"
-                    android:layout_column="3"
-                    android:background="@color/Blue" />
-
-            </TableRow>
-
-            <TableRow
-                style="@style/TableRowStyle">
+                    android:id="@+id/pm_good_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/good_title"
+                    app:layout_constraintLeft_toRightOf="@id/pm_good"
+                    app:layout_constraintTop_toTopOf="@id/pm_good" />
 
                 <TextView
-                    android:text="@string/PM"
-                    style="@style/HeaderCellTable"
-                    android:layout_column="0"
-                    android:padding="5dp" />
+                    android:id="@+id/pm_good_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_good_pm"
+                    app:layout_constraintLeft_toRightOf="@id/pm_good_title"
+                    app:layout_constraintTop_toTopOf="@id/pm_good_title" />
+
+                <Button
+                    android:id="@+id/pm_mod"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/mod_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pm_good" />
 
                 <TextView
-                    android:text="> 55.4"
-                    android:layout_column="1"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/pm_mod_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/pm_mod"
+                    app:layout_constraintTop_toTopOf="@id/pm_mod" />
 
                 <TextView
-                    android:text="25.4 - 55.4"
-                    android:layout_column="2"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/pm_mod_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_mod_pm"
+                    app:layout_constraintLeft_toRightOf="@id/pm_mod_title"
+                    app:layout_constraintTop_toTopOf="@id/pm_mod_title" />
+
+                <Button
+                    android:id="@+id/pm_poor"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/poor_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pm_mod" />
 
                 <TextView
-                    android:text="&lt; 25.4"
-                    android:layout_column="3"
-                    style="@style/NormalCellTable"/>
-
-            </TableRow>
-
-            <TableRow
-                style="@style/TableRowStyle">
+                    android:id="@+id/pm_poor_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/poor_title"
+                    app:layout_constraintLeft_toRightOf="@id/pm_poor"
+                    app:layout_constraintTop_toTopOf="@id/pm_poor" />
 
                 <TextView
-                    android:text="@string/Temperature"
-                    style="@style/HeaderCellTable" />
+                    android:id="@+id/pm_poor_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_poor_pm"
+                    app:layout_constraintLeft_toRightOf="@id/pm_poor_title"
+                    app:layout_constraintTop_toTopOf="@id/pm_poor_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/temperature_threshold"
+                style="@style/IndexStyle"
+                android:layout_marginTop="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pm_threshold">
 
                 <TextView
-                    android:text="&lt; 16\n> 30"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/temperature_header"
+                    style="@style/HeaderStyle"
+                    android:text="@string/info_header_temperature"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/temperature_good"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/good_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/temperature_header" />
 
                 <TextView
-                    android:text="16 - 20\n24.4 - 30"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/temperature_good_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/good_title"
+                    app:layout_constraintLeft_toRightOf="@id/temperature_good"
+                    app:layout_constraintTop_toTopOf="@id/temperature_good" />
 
                 <TextView
-                    android:text="20 - 24.4"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/temperature_good_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_good_temperature"
+                    app:layout_constraintLeft_toRightOf="@id/temperature_good_title"
+                    app:layout_constraintTop_toTopOf="@id/temperature_good_title" />
 
-            </TableRow>
-
-            <TableRow
-                style="@style/TableRowStyle">
-
-                <TextView
-                    android:text="@string/HM"
-                    style="@style/HeaderCellTable" />
-
-                <TextView
-                    android:text="&lt; 30\n> 65"
-                    style="@style/NormalCellTable"/>
+                <Button
+                    android:id="@+id/temperature_mod"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/mod_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/temperature_good" />
 
                 <TextView
-                    android:text="30 - 45\n60 - 65"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/temperature_mod_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/temperature_mod"
+                    app:layout_constraintTop_toTopOf="@id/temperature_mod" />
 
                 <TextView
-                    android:text="45 - 60"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/temperature_mod_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_mod_temperature"
+                    app:layout_constraintBottom_toBottomOf="@id/temperature_mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/temperature_mod_title"
+                    app:layout_constraintTop_toTopOf="@id/temperature_mod_title" />
 
-            </TableRow>
-
-            <TableRow
-                style="@style/TableRowStyle">
-
-                <TextView
-                    android:text="@string/CO2"
-                    style="@style/HeaderCellTable"
-                    android:layout_height="match_parent" />
-
-                <TextView
-                    android:text="> 1100"
-                    style="@style/NormalCellTable"/>
+                <Button
+                    android:id="@+id/temperature_poor"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/poor_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/temperature_mod" />
 
                 <TextView
-                    android:text="850 - 1100"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/temperature_poor_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/poor_title"
+                    app:layout_constraintLeft_toRightOf="@id/temperature_poor"
+                    app:layout_constraintTop_toTopOf="@id/temperature_poor" />
 
                 <TextView
-                    android:text="&lt; 850"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/temperature_poor_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_poor_temperature"
+                    app:layout_constraintLeft_toRightOf="@id/temperature_poor_title"
+                    app:layout_constraintTop_toTopOf="@id/temperature_poor_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </TableRow>
-
-            <TableRow
-                style="@style/TableRowStyle">
-
-                <TextView
-                    android:text="@string/H2CO"
-                    style="@style/HeaderCellTable" />
-
-                <TextView
-                    android:text="> 0.12"
-                    style="@style/NormalCellTable"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/humidity_threshold"
+                style="@style/IndexStyle"
+                android:layout_marginTop="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/temperature_threshold">
 
                 <TextView
-                    android:text="0.05 - 0.12"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/humidity_header"
+                    style="@style/HeaderStyle"
+                    android:text="@string/info_header_humidity"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/humidity_good"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/good_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/humidity_header" />
 
                 <TextView
-                    android:text="&lt; 0.05"
-                    style="@style/NormalCellTable"/>
-
-            </TableRow>
-
-            <TableRow
-                style="@style/TableRowStyle">
+                    android:id="@+id/humidity_good_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/good_title"
+                    app:layout_constraintLeft_toRightOf="@id/humidity_good"
+                    app:layout_constraintTop_toTopOf="@id/humidity_good" />
 
                 <TextView
-                    android:text="@string/VOC"
-                    style="@style/HeaderCellTable" />
+                    android:id="@+id/humidity_good_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_good_humidity"
+                    app:layout_constraintLeft_toRightOf="@id/humidity_good_title"
+                    app:layout_constraintTop_toTopOf="@id/humidity_good_title" />
+
+                <Button
+                    android:id="@+id/humidity_mod"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/mod_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/humidity_good" />
 
                 <TextView
-                    android:text="> 2"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/humidity_mod_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/humidity_mod"
+                    app:layout_constraintTop_toTopOf="@id/humidity_mod" />
 
                 <TextView
-                    android:text="1 - 2"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/humidity_mod_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_mod_humidity"
+                    app:layout_constraintBottom_toBottomOf="@id/humidity_mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/humidity_mod_title"
+                    app:layout_constraintTop_toTopOf="@id/humidity_mod_title" />
+
+                <Button
+                    android:id="@+id/humidity_poor"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/poor_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/humidity_mod" />
 
                 <TextView
-                    android:text="&lt; 1"
-                    style="@style/NormalCellTable"/>
+                    android:id="@+id/humidity_poor_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/poor_title"
+                    app:layout_constraintLeft_toRightOf="@id/humidity_poor"
+                    app:layout_constraintTop_toTopOf="@id/humidity_poor" />
 
-            </TableRow>
+                <TextView
+                    android:id="@+id/humidity_poor_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_poor_humidity"
+                    app:layout_constraintLeft_toRightOf="@id/humidity_poor_title"
+                    app:layout_constraintTop_toTopOf="@id/humidity_poor_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </TableLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/co2_threshold"
+                style="@style/IndexStyle"
+                android:layout_marginTop="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/humidity_threshold">
 
+                <TextView
+                    android:id="@+id/co2_header"
+                    style="@style/HeaderStyle"
+                    android:text="@string/info_header_co2"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/co2_good"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/good_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/co2_header" />
+
+                <TextView
+                    android:id="@+id/co2_good_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/good_title"
+                    app:layout_constraintLeft_toRightOf="@id/co2_good"
+                    app:layout_constraintTop_toTopOf="@id/co2_good" />
+
+                <TextView
+                    android:id="@+id/co2_good_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_good_co2"
+                    app:layout_constraintLeft_toRightOf="@id/co2_good_title"
+                    app:layout_constraintTop_toTopOf="@id/co2_good_title" />
+
+                <Button
+                    android:id="@+id/co2_mod"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/mod_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/co2_good" />
+
+                <TextView
+                    android:id="@+id/co2_mod_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/co2_mod"
+                    app:layout_constraintTop_toTopOf="@id/co2_mod" />
+
+                <TextView
+                    android:id="@+id/co2_mod_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_mod_co2"
+                    app:layout_constraintLeft_toRightOf="@id/co2_mod_title"
+                    app:layout_constraintTop_toTopOf="@id/co2_mod_title" />
+
+                <Button
+                    android:id="@+id/co2_poor"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/poor_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/co2_mod" />
+
+                <TextView
+                    android:id="@+id/co2_poor_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/poor_title"
+                    app:layout_constraintLeft_toRightOf="@id/co2_poor"
+                    app:layout_constraintTop_toTopOf="@id/co2_poor" />
+
+                <TextView
+                    android:id="@+id/co2_poor_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_poor_co2"
+                    app:layout_constraintLeft_toRightOf="@id/co2_poor_title"
+                    app:layout_constraintTop_toTopOf="@id/co2_poor_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ch2o_threshold"
+                style="@style/IndexStyle"
+                android:layout_marginTop="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/co2_threshold">
+
+                <TextView
+                    android:id="@+id/ch2o_header"
+                    style="@style/HeaderStyle"
+                    android:text="@string/info_header_ch2o"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/ch2o_good"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/good_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ch2o_header" />
+
+                <TextView
+                    android:id="@+id/ch2o_good_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/good_title"
+                    app:layout_constraintBottom_toBottomOf="@id/ch2o_good"
+                    app:layout_constraintLeft_toRightOf="@id/ch2o_good"
+                    app:layout_constraintTop_toTopOf="@id/ch2o_good" />
+
+                <TextView
+                    android:id="@+id/ch2o_good_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_good_ch2o"
+                    app:layout_constraintBottom_toBottomOf="@id/ch2o_good_title"
+                    app:layout_constraintLeft_toRightOf="@id/ch2o_good_title"
+                    app:layout_constraintTop_toTopOf="@id/ch2o_good_title" />
+
+                <Button
+                    android:id="@+id/ch2o_mod"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/mod_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ch2o_good" />
+
+                <TextView
+                    android:id="@+id/ch2o_mod_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/mod_title"
+                    app:layout_constraintBottom_toBottomOf="@id/ch2o_mod"
+                    app:layout_constraintLeft_toRightOf="@id/ch2o_mod"
+                    app:layout_constraintTop_toTopOf="@id/ch2o_mod" />
+
+                <TextView
+                    android:id="@+id/ch2o_mod_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_mod_ch2o"
+                    app:layout_constraintBottom_toBottomOf="@id/ch2o_mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/ch2o_mod_title"
+                    app:layout_constraintTop_toTopOf="@id/ch2o_mod_title" />
+
+                <Button
+                    android:id="@+id/ch2o_poor"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/poor_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ch2o_mod" />
+
+                <TextView
+                    android:id="@+id/ch2o_poor_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/poor_title"
+                    app:layout_constraintBottom_toBottomOf="@id/ch2o_poor"
+                    app:layout_constraintLeft_toRightOf="@id/ch2o_poor"
+                    app:layout_constraintTop_toTopOf="@id/ch2o_poor" />
+
+                <TextView
+                    android:id="@+id/ch2o_poor_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_poor_ch2o"
+                    app:layout_constraintBottom_toBottomOf="@id/ch2o_poor_title"
+                    app:layout_constraintLeft_toRightOf="@id/ch2o_poor_title"
+                    app:layout_constraintTop_toTopOf="@id/ch2o_poor_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/vooc_threshold"
+                style="@style/IndexStyle"
+                android:layout_marginTop="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ch2o_threshold">
+
+                <TextView
+                    android:id="@+id/vooc_header"
+                    style="@style/HeaderStyle"
+                    android:text="@string/info_header_vooc"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/vooc_good"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/good_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vooc_header" />
+
+                <TextView
+                    android:id="@+id/vooc_good_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/good_title"
+                    app:layout_constraintBottom_toBottomOf="@id/vooc_good"
+                    app:layout_constraintLeft_toRightOf="@id/vooc_good"
+                    app:layout_constraintTop_toTopOf="@id/vooc_good" />
+
+                <TextView
+                    android:id="@+id/vooc_good_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_good_vooc"
+                    app:layout_constraintBottom_toBottomOf="@id/vooc_good_title"
+                    app:layout_constraintLeft_toRightOf="@id/vooc_good_title"
+                    app:layout_constraintTop_toTopOf="@id/vooc_good_title" />
+
+                <Button
+                    android:id="@+id/vooc_mod"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/mod_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vooc_good" />
+
+                <TextView
+                    android:id="@+id/vooc_mod_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/mod_title"
+                    app:layout_constraintBottom_toBottomOf="@id/vooc_mod"
+                    app:layout_constraintLeft_toRightOf="@id/vooc_mod"
+                    app:layout_constraintTop_toTopOf="@id/vooc_mod" />
+
+                <TextView
+                    android:id="@+id/vooc_mod_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_mod_vooc"
+                    app:layout_constraintBottom_toBottomOf="@id/vooc_mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/vooc_mod_title"
+                    app:layout_constraintTop_toTopOf="@id/vooc_mod_title" />
+
+                <Button
+                    android:id="@+id/vooc_poor"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/poor_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vooc_mod" />
+
+                <TextView
+                    android:id="@+id/vooc_poor_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/poor_title"
+                    app:layout_constraintBottom_toBottomOf="@id/vooc_poor"
+                    app:layout_constraintLeft_toRightOf="@id/vooc_poor"
+                    app:layout_constraintTop_toTopOf="@id/vooc_poor" />
+
+                <TextView
+                    android:id="@+id/vooc_poor_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_poor_vooc"
+                    app:layout_constraintBottom_toBottomOf="@id/vooc_poor_title"
+                    app:layout_constraintLeft_toRightOf="@id/vooc_poor_title"
+                    app:layout_constraintTop_toTopOf="@id/vooc_poor_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/aq_threshold"
+                style="@style/IndexStyle"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vooc_threshold">
+
+                <TextView
+                    android:id="@+id/aq_header"
+                    style="@style/HeaderStyle"
+                    android:text="@string/info_header_aq"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/aq_good"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/good_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/aq_header" />
+
+                <TextView
+                    android:id="@+id/aq_good_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/good_title"
+                    app:layout_constraintBottom_toBottomOf="@id/aq_good"
+                    app:layout_constraintLeft_toRightOf="@id/aq_good"
+                    app:layout_constraintTop_toTopOf="@id/aq_good" />
+
+                <TextView
+                    android:id="@+id/aq_good_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_good_aq"
+                    app:layout_constraintBottom_toBottomOf="@id/aq_good_title"
+                    app:layout_constraintLeft_toRightOf="@id/aq_good_title"
+                    app:layout_constraintTop_toTopOf="@id/aq_good_title" />
+
+                <Button
+                    android:id="@+id/aq_mod"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/mod_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/aq_good" />
+
+                <TextView
+                    android:id="@+id/aq_mod_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/mod_title"
+                    app:layout_constraintBottom_toBottomOf="@id/aq_mod"
+                    app:layout_constraintLeft_toRightOf="@id/aq_mod"
+                    app:layout_constraintTop_toTopOf="@id/aq_mod" />
+
+                <TextView
+                    android:id="@+id/aq_mod_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_mod_aq"
+                    app:layout_constraintBottom_toBottomOf="@id/aq_mod_title"
+                    app:layout_constraintLeft_toRightOf="@id/aq_mod_title"
+                    app:layout_constraintTop_toTopOf="@id/aq_mod_title" />
+
+                <Button
+                    android:id="@+id/aq_poor"
+                    style="@style/ButtonStyle"
+                    android:background="@drawable/poor_aq_cycle"
+                    android:enabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/aq_mod" />
+
+                <TextView
+                    android:id="@+id/aq_poor_title"
+                    style="@style/ThresholdIndex"
+                    android:text="@string/poor_title"
+                    app:layout_constraintBottom_toBottomOf="@id/aq_poor"
+                    app:layout_constraintLeft_toRightOf="@id/aq_poor"
+                    app:layout_constraintTop_toTopOf="@id/aq_poor" />
+
+                <TextView
+                    android:id="@+id/aq_poor_content"
+                    style="@style/LineContentStyle"
+                    android:text="@string/info_poor_aq"
+                    app:layout_constraintBottom_toBottomOf="@id/aq_poor_title"
+                    app:layout_constraintLeft_toRightOf="@id/aq_poor_title"
+                    app:layout_constraintTop_toTopOf="@id/aq_poor_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

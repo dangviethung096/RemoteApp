@@ -52,4 +52,49 @@
         <item name="android:layout_marginTop">10dp</item>
     </style>
 
+    <style name="LineContentStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/Black</item>
+        <item name="android:gravity">left</item>
+<!--        <item name="android:layout_marginTop">10dp</item>-->
+<!--        <item name="android:layout_marginBottom">10dp</item>-->
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:lineSpacingExtra">6dp</item>
+    </style>
+
+    <style name="ButtonStyle">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/Black</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginTop">30dp</item>
+    </style>
+
+    <style name="HeaderStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/Black</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="IndexStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="ThresholdIndex">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/Black</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+
 </resources>

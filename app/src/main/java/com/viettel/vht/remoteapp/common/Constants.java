@@ -14,7 +14,7 @@ public class Constants {
     public static final int MAX_AIR_PURIFIER_SPEED = 3;
     public static final int MIN_AIR_PURIFIER_SPEED = 0;
 
-    public static final int LOOP_NUMBER = 20;
+    public static final int LOOP_NUMBER = 30;
     public static final long SLEEP_TIME = 500L;
     public static final long WAIT_NEXT_LOOP = 2000L;
     public static final long WAIT_TO_STATE_CHANGE = 3000L;
