@@ -34,7 +34,7 @@
 //import com.viettel.vht.remoteapp.common.KeyOfDevice;
 //import com.viettel.vht.remoteapp.common.KeyOfStates;
 //import com.viettel.vht.remoteapp.exceptions.DisconnectionException;
-//import com.viettel.vht.remoteapp.utilities.MqttClientToAWS;
+//import com.viettel.vht.remoteapp.utilities.MqttClientToBroker;
 //
 //public class AirRemoteControl extends Fragment {
 //    private MainActivity parentActivity;
@@ -56,7 +56,7 @@
 ////    private TextView mPowerState, mNameRemoteControl, mSpeedState, tvPowerButton, tvUVButton;
 //
 //    // Mqtt client
-//    private MqttClientToAWS mqttClient;
+//    private MqttClientToBroker mqttClient;
 //
 //    // Dialog alert
 //    private Dialog mCloudConnectionDialog, mServerConnectionDialog, mNotFoundDeviceIdDialog;

@@ -14,6 +14,18 @@ public class RemoteDevice {
         remoteDeviceId = null;
     }
 
+    public void setAllNull() {
+        smartPlugId = null;
+        remoteDeviceId = null;
+    }
+
+
+    public boolean isNotNull() {
+        if (smartPlugId == null || remoteDeviceId == null) {
+            return false;
+        }
+        return true;
+    }
     // Getter and setter
     public String getRemoteDeviceId() {
         return remoteDeviceId;

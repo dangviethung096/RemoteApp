@@ -36,7 +36,8 @@ import com.viettel.vht.remoteapp.common.PowerState;
 import com.viettel.vht.remoteapp.common.SpeedState;
 import com.viettel.vht.remoteapp.monitoring.MonitoringSystem;
 import com.viettel.vht.remoteapp.objects.AirPurifier;
-import com.viettel.vht.remoteapp.utilities.MqttClientToAWS;
+import com.viettel.vht.remoteapp.objects.RemoteDevice;
+import com.viettel.vht.remoteapp.utilities.MqttClientToBroker;
 
 public class HomeFragment extends Fragment {
 
@@ -51,7 +52,7 @@ public class HomeFragment extends Fragment {
     private Thread monitoringThread;
     private MonitoringSystem monitoringSystem;
     private MainActivity parentActivity;
-    private MqttClientToAWS mqttClient;
+    private MqttClientToBroker mqttClient;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     // Sound button
@@ -129,6 +130,7 @@ public class HomeFragment extends Fragment {
 
         // determine how many device remote
         expectedStateInDevice = parentActivity.getRealState();
+        remoteDevice = parentActivity.getRemoteDevice();
         stateInUI = new AirPurifier();
 
         // Get swipe refresh
@@ -140,7 +142,8 @@ public class HomeFragment extends Fragment {
                 startRefresh();
             }
         });
-
+        // Swet refreshing for swipeRefreshLayout
+        markRefreshing();
         // Get sound button
         soundButton = MediaPlayer.create(parentActivity, R.raw.sample_3);
         // Get vibrate
@@ -204,10 +207,12 @@ public class HomeFragment extends Fragment {
     // Hungdv39 add variable
     private Button mBtPower, mBtLowSpeed, mBtMedSpeed, mBtHighSpeed;
     private AirPurifier expectedStateInDevice;
+    private RemoteDevice remoteDevice;
     private Switch mSwitchMode;
     private AirPurifier stateInUI;
 
     static final String LOG_TAG = HomeFragment.class.getCanonicalName();
+
 
     View.OnClickListener btPowerClick = new View.OnClickListener() {
         @Override
@@ -630,10 +635,9 @@ public class HomeFragment extends Fragment {
         private boolean checkNullValue() throws InterruptedException {
             for (int i = 0; i < Constants.MAX_CHECK_UPDATE_HOME_UI; i++) {
                 // Check validate and break loop
-                if (expectedStateInDevice.isNotNull()) {
+                if (expectedStateInDevice.isNotNull() && remoteDevice.isNotNull()) {
                     return true;
                 }
-
                 Thread.sleep(Constants.WAIT_TO_UPDATE_UI);
             }
 
@@ -643,7 +647,6 @@ public class HomeFragment extends Fragment {
         @Override
         public void run() {
             try {
-                // Check visibility on ui
                 if (!checkVisibilityUI()) {
                     return;
                 }
@@ -695,14 +698,12 @@ public class HomeFragment extends Fragment {
                 if (!loopFlag) {
                     checkUpdate();
                 }
-
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             } finally {
                 // stop refresh
                 stopRefresh();
             }
-
         }
     }
 
@@ -777,12 +778,37 @@ public class HomeFragment extends Fragment {
     /**
      * Stop refresh in refresh layout
      */
-    public void stopRefresh() {
+    private void stopRefresh() {
         if (swipeRefreshLayout.isRefreshing()) {
             parentActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     swipeRefreshLayout.setRefreshing(false);
+
+                }
+            });
+
+        }
+    }
+
+    public void showLoadingBar() {
+        if (loadingBar.getVisibility() == View.GONE) {
+            parentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    loadingBar.setVisibility(View.VISIBLE); // enable the loading bar
+                }
+            });
+
+        }
+    }
+
+    public void hideLoadingBar() {
+        if (loadingBar.getVisibility() == View.VISIBLE) {
+            parentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    loadingBar.setVisibility(View.GONE); // disable the loading bar
                 }
             });
 
@@ -794,22 +820,28 @@ public class HomeFragment extends Fragment {
      */
     private void startRefresh() {
         Log.i(LOG_TAG, "Start refresh layout");
-        // Start refresh
+        if (swipeRefreshLayout.isRefreshing()) {
+            // Start refresh
+            markRefreshing();
+            // disable all button
+            uiInRefreshData();
+            // check information
+            parentActivity.checkInformation();
+            // Refresh data
+            monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, dsIcon, dsText);
+            // update ui
+            updateUI();
+        }
+    }
+
+
+    // Set freshing
+    private void markRefreshing() {
         parentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
             }
         });
-
-        // disable all button
-        uiInRefreshData();
-        // check information
-        parentActivity.checkInformation();
-        // Refresh data
-        monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, dsIcon, dsText);
-        // update ui
-        updateUI();
     }
-
 }

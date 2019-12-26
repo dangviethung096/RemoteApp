@@ -103,7 +103,7 @@
 
     <!--Information of threshold-->
     <string name="info_aqi">Chất lượng không khí</string>
-    <string name="info_aqi_content">Điểm số chất lượng không khí theo theo thời gian thực được xác định bởi dữ liệu được lấy bở thiết bị Airthix IAQ và các giải thuật nâng cao nhằm cung cấp cho người sử dụng một cái nhìn tổng quan về chất lượng không khí trong nhà của họ</string>
+    <string name="info_aqi_content">Điểm số chất lượng không khí theo thời gian thực được xác định bởi dữ liệu được lấy bở thiết bị Airthix IAQ và các giải thuật nâng cao nhằm cung cấp cho người sử dụng một cái nhìn tổng quan về chất lượng không khí trong nhà của họ</string>
 
     <string name="info_header">Chỉ số</string>
 

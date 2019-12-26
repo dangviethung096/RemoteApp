@@ -23,16 +23,20 @@ import com.viettel.vht.remoteapp.common.PowerState;
 import com.viettel.vht.remoteapp.common.SpeedState;
 import com.viettel.vht.remoteapp.objects.AirPurifier;
 import com.viettel.vht.remoteapp.objects.RemoteDevice;
-import com.viettel.vht.remoteapp.utilities.MqttClientToAWS;
+import com.viettel.vht.remoteapp.utilities.MqttClientToBroker;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,10 +46,12 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     static final String LOG_TAG = MainActivity.class.getCanonicalName();
-    private MqttClientToAWS mqttClient;
+    private MqttClientToBroker mqttClient;
 //    private HashMap<String, RemoteDevice> deviceList = new HashMap<String, RemoteDevice>();
 //    private HashMap<String, String> stateList = new HashMap<String, String>();
+    // Remove device
     private RemoteDevice remoteDevice = new RemoteDevice();
+    // State of air purifier
     private AirPurifier realState = new AirPurifier();
     private AirPurifier expectedState = new AirPurifier();
 
@@ -60,7 +66,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Connect to server
-        mqttClient = new MqttClientToAWS(this);
+        try {
+            mqttClient = new MqttClientToBroker(Constants.MQTT_BROKER_URL);
+        } catch (Exception ex) {
+            Log.e(LOG_TAG, "Error when initialize a new mqtt client to broker");
+            ex.printStackTrace();
+            return;
+        }
+
         // For navigator
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -148,8 +161,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create();
 
-
-
         // Get info of device
         checkInformation();
     }
@@ -184,10 +195,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void subscribeDeviceInfo() {
-        mqttClient.getMqttManager().subscribeToTopic(DevicesTopics.SUBSCRIBE_DEVICE_INFO, AWSIotMqttQos.QOS1, new AWSIotMqttNewMessageCallback() {
+//        AWSIotMqttNewMessageCallback deviceInfoCallBack = new AWSIotMqttNewMessageCallback() {
+//            @Override
+//            public void onMessageArrived(String topic, byte[] data) {
+//                String strData = new String(data);
+//                Log.d(LOG_TAG, "data in device = " + strData);
+//                try {
+//                    JSONArray jsonDevices = new JSONArray(strData);
+//                    JSONObject jsonDevice;
+//
+//                    for (int i = 0; i < jsonDevices.length(); i++) {
+//                        jsonDevice = jsonDevices.getJSONObject(i);
+//                        if (jsonDevice.get("name").equals(KeyOfDevice.REMOTE.getValue())) {
+//                            // remote device
+//                            remoteDevice.setRemoteDeviceId(jsonDevice.getString("id"));
+//
+//                        } else if (jsonDevice.get("name").equals(KeyOfDevice.SMART_PLUG.getValue())) {
+//                            // smart pug id
+//                            remoteDevice.setSmartPlugId(jsonDevice.getString("id"));
+//                        } else {
+//                            Log.e(LOG_TAG, "Error value: " + jsonDevice.get("name"));
+//                        }
+//                    }
+//
+//                } catch (JSONException je) {
+//                    Log.e(LOG_TAG, "Error when parsing json device info");
+//                    je.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+
+        IMqttMessageListener deviceInfoCallBack = new IMqttMessageListener() {
             @Override
-            public void onMessageArrived(String topic, byte[] data) {
-                String strData = new String(data);
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                String strData = new String(message.getPayload());
                 Log.d(LOG_TAG, "data in device = " + strData);
                 try {
                     JSONArray jsonDevices = new JSONArray(strData);
@@ -198,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
                         if (jsonDevice.get("name").equals(KeyOfDevice.REMOTE.getValue())) {
                             // remote device
                             remoteDevice.setRemoteDeviceId(jsonDevice.getString("id"));
-
                         } else if (jsonDevice.get("name").equals(KeyOfDevice.SMART_PLUG.getValue())) {
                             // smart pug id
                             remoteDevice.setSmartPlugId(jsonDevice.getString("id"));
@@ -213,18 +255,39 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
-        });
+        };
+
+        mqttClient.subscribe(DevicesTopics.SUBSCRIBE_DEVICE_INFO, deviceInfoCallBack);
     }
 
     private void subscribeDeviceStates() {
         // Subscribe state of topic
-        AWSIotMqttNewMessageCallback callbackPower = new AWSIotMqttNewMessageCallback() {
+//        AWSIotMqttNewMessageCallback callbackPower = new AWSIotMqttNewMessageCallback() {
+//            @Override
+//            public void onMessageArrived(String topic, byte[] data) {
+//                Log.d(LOG_TAG, "data_power = " + new String(data));
+//                String power = new String(data);
+//                // Set power to realState
+//                if (power.equals(PowerState.OFF.getValue())) {
+//                    // power off
+//                    realState.setPower(PowerState.OFF);
+//                } else if (power.equals(PowerState.ON.getValue())) {
+//                    // power on
+//                    realState.setPower(PowerState.ON);
+//                } else {
+//                    // error
+//                    Log.e(LOG_TAG, "wrong power value!");
+//                }
+//
+//            }
+//        };
+
+        IMqttMessageListener callbackPower = new IMqttMessageListener() {
             @Override
-            public void onMessageArrived(String topic, byte[] data) {
-                Log.d(LOG_TAG, "data_power = " + new String(data));
-                String power = new String(data);
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                String power = new String(message.getPayload());
+                Log.d(LOG_TAG, "data_power = " + power);
                 // Set power to realState
                 if (power.equals(PowerState.OFF.getValue())) {
                     // power off
@@ -236,17 +299,42 @@ public class MainActivity extends AppCompatActivity {
                     // error
                     Log.e(LOG_TAG, "wrong power value!");
                 }
-
             }
         };
+
         mqttClient.subscribe(AirPurifierTopics.SUBSCRIBE_STATE_POWER, callbackPower);
 
         // Subscribe speed state of topic
-        AWSIotMqttNewMessageCallback callbackSpeed = new AWSIotMqttNewMessageCallback() {
+//        AWSIotMqttNewMessageCallback callbackSpeed = new AWSIotMqttNewMessageCallback() {
+//            @Override
+//            public void onMessageArrived(String topic, byte[] data) {
+//                Log.d(LOG_TAG, "data_speed = " + new String(data));
+//                int speed = Integer.parseInt(new String(data));
+//
+////                stateList.put(KeyOfStates.SPEED.getValue(), new String(data));
+//                if (speed == SpeedState.OFF.getValue()) {
+//                    // speed off
+//                    realState.setSpeed(SpeedState.OFF);
+//                } else if (speed == SpeedState.LOW.getValue()) {
+//                    // low speed
+//                    realState.setSpeed(SpeedState.LOW);
+//                } else if (speed == SpeedState.MED.getValue()) {
+//                    // med speed
+//                    realState.setSpeed(SpeedState.MED);
+//                } else if (speed == SpeedState.HIGH.getValue()) {
+//                    // high speed
+//                    realState.setSpeed(SpeedState.HIGH);
+//                } else {
+//                    Log.d(LOG_TAG, "Wrong value speed");
+//                }
+//            }
+//        };
+
+        IMqttMessageListener callbackSpeed = new IMqttMessageListener() {
             @Override
-            public void onMessageArrived(String topic, byte[] data) {
-                Log.d(LOG_TAG, "data_speed = " + new String(data));
-                int speed = Integer.parseInt(new String(data));
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                Log.d(LOG_TAG, "data_speed = " + new String(message.getPayload()));
+                int speed = Integer.parseInt(new String(message.getPayload()));
 
 //                stateList.put(KeyOfStates.SPEED.getValue(), new String(data));
                 if (speed == SpeedState.OFF.getValue()) {
@@ -266,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
         mqttClient.subscribe(AirPurifierTopics.SUBSCRIBE_STATE_SPEED, callbackSpeed);
 
     }
@@ -273,10 +362,29 @@ public class MainActivity extends AppCompatActivity {
     private void subscribeModeControl() {
         // Subscribe state of control mode from server
         // Set call back function
-        AWSIotMqttNewMessageCallback callbackControlMode = new AWSIotMqttNewMessageCallback() {
+//        AWSIotMqttNewMessageCallback callbackControlMode = new AWSIotMqttNewMessageCallback() {
+//            @Override
+//            public void onMessageArrived(String topic, byte[] data) {
+//                String mode = new String(data);
+//                Log.d(LOG_TAG, "mode = " + mode);
+//                // check mode
+//                if (mode.equals(ControlMode.AUTO.getValue())) {
+//                    // auto
+//                    realState.setControlMode(ControlMode.AUTO);
+//                } else if (mode.equals(ControlMode.MANUAL.getValue())) {
+//                    // manual
+//                    realState.setControlMode(ControlMode.MANUAL);
+//                } else {
+//                    Log.e(LOG_TAG, "Wrong value in control mode");
+//                }
+//
+//            }
+//        };
+
+        IMqttMessageListener callbackControlMode = new IMqttMessageListener() {
             @Override
-            public void onMessageArrived(String topic, byte[] data) {
-                String mode = new String(data);
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                String mode = new String(message.getPayload());
                 Log.d(LOG_TAG, "mode = " + mode);
                 // check mode
                 if (mode.equals(ControlMode.AUTO.getValue())) {
@@ -288,7 +396,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Log.e(LOG_TAG, "Wrong value in control mode");
                 }
-
             }
         };
 
@@ -421,10 +528,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            // Start check information
+            Log.i(LOG_TAG, "Start check information!");
             try {
-                // Reset value
+                // new value
                 realState.setAllNull();
-                expectedState.setAllNull();
+                remoteDevice.setAllNull();
 
                 // Check connection
                 if (!checkMqttConnection()) {
@@ -550,9 +659,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // Getter and setter
-    public MqttClientToAWS getMqttClient() {
+    public MqttClientToBroker getMqttClient() {
         return mqttClient;
     }
 
@@ -566,6 +674,10 @@ public class MainActivity extends AppCompatActivity {
 
     public AirPurifier getRealState() {
         return realState;
+    }
+
+    public RemoteDevice getRemoteDevice() {
+        return remoteDevice;
     }
 
     public AirPurifier getExpectedState() {

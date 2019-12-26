@@ -1,7 +1,6 @@
 package com.viettel.vht.remoteapp.utilities;
 
 import android.content.Context;
-import android.icu.util.LocaleData;
 import android.util.Log;
 
 
@@ -21,16 +20,28 @@ import com.amazonaws.services.iot.model.AttachPrincipalPolicyRequest;
 import com.amazonaws.services.iot.model.CreateKeysAndCertificateRequest;
 import com.amazonaws.services.iot.model.CreateKeysAndCertificateResult;
 import com.viettel.vht.remoteapp.common.AirPurifierTopics;
+import com.viettel.vht.remoteapp.common.Constants;
 import com.viettel.vht.remoteapp.common.ControlMode;
 import com.viettel.vht.remoteapp.common.DevicesTopics;
 import com.viettel.vht.remoteapp.common.MitsubishiFanTopics;
 
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.util.UUID;
 
-public class MqttClientToAWS implements Serializable {
-    private final String LOG_TAG = MqttClientToAWS.class.getCanonicalName();
+public class MqttClientToBroker implements Serializable, MqttCallback {
+    private final String LOG_TAG = MqttClientToBroker.class.getCanonicalName();
 
     // --- Constants to modify per your configuration ---
 
@@ -52,7 +63,7 @@ public class MqttClientToAWS implements Serializable {
     // Mqtt client
     private AWSIotClient mIotAndroidClient;
 
-    private AWSIotMqttManager mqttManager;
+    private AWSIotMqttManager mqttManager = null;
 
     private boolean isConnected = false;
 
@@ -88,7 +99,7 @@ public class MqttClientToAWS implements Serializable {
     private final int MAX_AUTO_CONNECT_ATTEMPTS = 2;
 
 
-    public MqttClientToAWS(Context context) {
+    public MqttClientToBroker(Context context) {
         clientId = UUID.randomUUID().toString();
         // Init value
         // TODO process if duplicate clientId
@@ -200,29 +211,35 @@ public class MqttClientToAWS implements Serializable {
     }
 
     public void makeConnectionToServer() {
-        // Connect to aws server
+        // Connect to aws server or mqtt cloud
         Log.d(LOG_TAG, "clientId = " + clientId);
         try {
-            mqttManager.connect(clientKeyStore, new AWSIotMqttClientStatusCallback() {
-                @Override
-                public void onStatusChanged(AWSIotMqttClientStatus status, final Throwable throwable) {
-                    Log.d(LOG_TAG, "Status = " + status.name());
-                    // Change connected status in remote control
-                    if (status.name().equals(AWSIotMqttClientStatus.Connected.name())) {
-                        // Run in th
-                        setConnected(true);
-                        setConnecting(false);
-                    } else if (status.name().equals(AWSIotMqttClientStatus.ConnectionLost.name())) {
-                        setConnected(false);
-                        setConnecting(false);
-                    } else if (status.name().equals(AWSIotMqttClientStatus.Connecting.name())
-                            || status.name().equals(AWSIotMqttClientStatus.Reconnecting.name())) {
-                        setConnected(false);
-                        setConnecting(true);
-                    }
+            if (mqttManager != null) {
+                // Connect in AWS
+                mqttManager.connect(clientKeyStore, new AWSIotMqttClientStatusCallback() {
+                    @Override
+                    public void onStatusChanged(AWSIotMqttClientStatus status, final Throwable throwable) {
+                        Log.d(LOG_TAG, "Status = " + status.name());
+                        // Change connected status in remote control
+                        if (status.name().equals(AWSIotMqttClientStatus.Connected.name())) {
+                            // Run in ui thread
+                            setConnected(true);
+                            setConnecting(false);
+                        } else if (status.name().equals(AWSIotMqttClientStatus.ConnectionLost.name())) {
+                            setConnected(false);
+                            setConnecting(false);
+                        } else if (status.name().equals(AWSIotMqttClientStatus.Connecting.name())
+                                || status.name().equals(AWSIotMqttClientStatus.Reconnecting.name())) {
+                            setConnected(false);
+                            setConnecting(true);
+                        }
 
-                }
-            });
+                    }
+                });
+            } else {
+                // Connect in mqtt cloud
+                connect();
+            }
 
         } catch (Exception e) {
             Log.e(LOG_TAG, "Connection error. ", e);
@@ -251,7 +268,7 @@ public class MqttClientToAWS implements Serializable {
 
     public void requestDeviceInfos() {
         String msg = "getinfo";
-        mqttManager.publishString("getinfo", DevicesTopics.REQUEST_DEVICE_INFO, AWSIotMqttQos.QOS0);
+        this.publish(msg, DevicesTopics.REQUEST_DEVICE_INFO);
     }
 
     public void requestAllStatesOfDevice(String smartPlugId) {
@@ -289,15 +306,16 @@ public class MqttClientToAWS implements Serializable {
         }
     }
 
-    public boolean publish(String msg, String topic) {
-        Log.d(LOG_TAG, "publish message: " + msg + ", to topic: " + topic);
-        // Check connected
-        if (isConnected) {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-            return true;
-        }
-        return false;
-    }
+//    /* Publish for AWS */
+//    public boolean publish(String msg, String topic) {
+//        Log.d(LOG_TAG, "publish message: " + msg + ", to topic: " + topic);
+//        // Check connected
+//        if (isConnected) {
+//            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
+//            return true;
+//        }
+//        return false;
+//    }
 
     public boolean subscribe(String topic, AWSIotMqttNewMessageCallback callback) {
         Log.d(LOG_TAG, "subscribe topic = " + topic);
@@ -308,9 +326,6 @@ public class MqttClientToAWS implements Serializable {
         return false;
     }
 
-    public void changePower(String deviceId) {
-        publish("play-" + deviceId, AirPurifierTopics.POWER);
-    }
 
     public void changePowerOn(String deviceId) {
         publish("play-" + deviceId, AirPurifierTopics.POWER_ON);
@@ -354,6 +369,144 @@ public class MqttClientToAWS implements Serializable {
     }
 
 
+    /* New Mqtt Client */
+    private final int qos = 1;
+    private MqttClient client;
+//    private boolean isConnected = false;
+    private MqttConnectOptions conOpt;
+//    String clientId = null;
+    private String host;
+
+    public MqttClientToBroker(String uri) throws MqttException, URISyntaxException {
+        this(new URI(uri));
+    }
+
+    public MqttClientToBroker(URI uri) throws MqttException {
+        Log.i(LOG_TAG, "Start connect to mqtt server");
+        host = String.format("tcp://%s:%d", uri.getHost(), uri.getPort());
+        String[] auth = this.getAuth(uri);
+        String username = auth[0];
+        String password = auth[1];
+        clientId = UUID.randomUUID().toString();
+
+        conOpt = new MqttConnectOptions();
+        conOpt.setCleanSession(true);
+        conOpt.setUserName(username);
+        conOpt.setPassword(password.toCharArray());
+
+        // Connect to server
+        this.connect();
+    }
+
+    public boolean connect()  {
+        Log.i(LOG_TAG, "Connect to server:" + host + "\nClientId: " + clientId + "\nUsername: " + conOpt.getUserName());
+        try {
+            this.client = new MqttClient(host, clientId, new MemoryPersistence());
+            this.client.setCallback(this);
+            this.client.connect(conOpt);
+
+            // Mark connected
+            setConnected(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private String[] getAuth(URI uri) {
+        String a = uri.getAuthority();
+        String[] first = a.split("@");
+        return first[0].split(":");
+    }
+
+    /**
+     * @see MqttCallback#connectionLost(Throwable)
+     */
+    public void connectionLost(Throwable cause) {
+        System.out.println("Connection lost because: " + cause);
+        // Try to reconnect
+        try {
+            for (int i = 0; i < MAX_AUTO_CONNECT_ATTEMPTS; i++) {
+                this.connect();
+                Thread.sleep(Constants.WAIT_TO_STATE_CHANGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        setConnected(false);
+    }
+
+    /**
+     * @see MqttCallback#deliveryComplete(IMqttDeliveryToken)
+     */
+    public void deliveryComplete(IMqttDeliveryToken token) {
+        try {
+            Log.i(LOG_TAG, "Delivery complete with message: " + new String(token.getTopics()[0]));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    /**
+     * @see MqttCallback#messageArrived(String, MqttMessage)
+     */
+    public void messageArrived(String topic, MqttMessage message) throws MqttException {
+        // Log
+        Log.i(LOG_TAG, "[" + topic + "]" + " " + new String(message.getPayload()));
+    }
+
+    /**
+     * Subscribe a topic
+     * @param topic
+     * @param listener
+     * @return
+     */
+    public boolean subscribe(String topic, IMqttMessageListener listener) {
+        Log.i(LOG_TAG, "subscribe topic: " + topic);
+        try {
+            // Subscribe the topic
+            this.client.subscribe(topic, listener);
+        } catch (MqttException me) {
+            // Error
+            Log.e(LOG_TAG, me.getMessage());
+            me.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Publish a message to server
+     * @param topic
+     * @param payload
+     * @return
+     */
+    private boolean publish(String payload, String topic) {
+        Log.i(LOG_TAG, "Publish to topic = " + topic + ", payload = " + payload);
+        try {
+            MqttMessage message = new MqttMessage(payload.getBytes());
+            message.setQos(qos);
+            // Publish to server
+            this.client.publish(topic, message); // Blocking publish
+        } catch (MqttException me) {
+            // Error
+            Log.e(LOG_TAG, me.getMessage());
+            me.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+
     // Getter and setter
     public String getClientId() {
         return clientId;
@@ -363,15 +516,17 @@ public class MqttClientToAWS implements Serializable {
         return mqttManager;
     }
 
-    public void setMqttManager(AWSIotMqttManager mqttManager) {
-        this.mqttManager = mqttManager;
-    }
 
     public boolean isConnected() {
+        if (client != null) {
+            isConnected = client.isConnected();
+        }
         return isConnected;
     }
 
     public void setConnected(boolean connected) {
         isConnected = connected;
     }
+
+
 }

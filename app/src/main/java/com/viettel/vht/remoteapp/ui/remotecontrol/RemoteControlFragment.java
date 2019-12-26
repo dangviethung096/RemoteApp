@@ -34,7 +34,7 @@
 //import com.viettel.vht.remoteapp.common.AirPurifierTopics;
 //import com.viettel.vht.remoteapp.common.KeyOfDevice;
 //import com.viettel.vht.remoteapp.common.KeyOfStates;
-//import com.viettel.vht.remoteapp.utilities.MqttClientToAWS;
+//import com.viettel.vht.remoteapp.utilities.MqttClientToBroker;
 //
 //
 //
@@ -53,7 +53,7 @@
 //    private TextView mStatus, mNameRemoteControl;
 //
 //    // Mqtt client
-//    private MqttClientToAWS mqttClient;
+//    private MqttClientToBroker mqttClient;
 //
 //    // Dialog alert
 //    private Dialog mConnectDialog;

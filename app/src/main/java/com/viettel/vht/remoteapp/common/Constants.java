@@ -25,7 +25,7 @@ public class Constants {
 
     public static final int MAX_TRY_REQUEST = 1;
 
-    public static final int MAX_DIFF_COUNT_IN_MANUAL = 2;
+    public static final int MAX_DIFF_COUNT_IN_MANUAL = 3;
 
     public static final int MAX_DIFF_COUNT_IN_AUTO = 1;
 
@@ -33,6 +33,8 @@ public class Constants {
 
     public static final int CHECK_DIFFERENCE_LOOP_NUMBER = 1;
     public static final long CHECK_DIFFERENCE_SLEEP_TIME = 1000L;
+
+    public static final String MQTT_BROKER_URL = "mqtt://ellvehgs:DpY6ZeviaoJ6@tailor.cloudmqtt.com:12664";
 
 }
 

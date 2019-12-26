@@ -9,16 +9,16 @@ import com.viettel.vht.remoteapp.common.PowerState;
 import com.viettel.vht.remoteapp.common.SpeedState;
 import com.viettel.vht.remoteapp.objects.AirPurifier;
 import com.viettel.vht.remoteapp.objects.RemoteDevice;
-import com.viettel.vht.remoteapp.utilities.MqttClientToAWS;
+import com.viettel.vht.remoteapp.utilities.MqttClientToBroker;
 
 public class StateChecker extends Thread {
     private final String LOG_TAG = StateChecker.class.getCanonicalName();
     private AirPurifier expectedState;
     private AirPurifier realState;
-    private MqttClientToAWS mqttClient;
+    private MqttClientToBroker mqttClient;
     private RemoteDevice remoteDevice;
 
-    public StateChecker (MqttClientToAWS mqttClient, AirPurifier expectedState, AirPurifier realState,
+    public StateChecker (MqttClientToBroker mqttClient, AirPurifier expectedState, AirPurifier realState,
                          RemoteDevice remoteDevice) {
         this.mqttClient = mqttClient;
         this.expectedState = expectedState;
