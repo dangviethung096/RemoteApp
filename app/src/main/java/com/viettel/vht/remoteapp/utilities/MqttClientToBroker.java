@@ -238,7 +238,7 @@ public class MqttClientToBroker implements Serializable, MqttCallback {
                 });
             } else {
                 // Connect in mqtt cloud
-                connect();
+                connectToMqttCloud();
             }
 
         } catch (Exception e) {
@@ -382,7 +382,7 @@ public class MqttClientToBroker implements Serializable, MqttCallback {
     }
 
     public MqttClientToBroker(URI uri) throws MqttException {
-        Log.i(LOG_TAG, "Start connect to mqtt server");
+        Log.i(LOG_TAG, "Start connect to mqtt server in Mqtt Cloud");
         host = String.format("tcp://%s:%d", uri.getHost(), uri.getPort());
         String[] auth = this.getAuth(uri);
         String username = auth[0];
@@ -395,10 +395,13 @@ public class MqttClientToBroker implements Serializable, MqttCallback {
         conOpt.setPassword(password.toCharArray());
 
         // Connect to server
-        this.connect();
+        // Set null for aws
+        mqttManager = null;
+        // Start connectToMqttCloud mqtt cloud
+        makeConnectionToServer();
     }
 
-    public boolean connect()  {
+    public boolean connectToMqttCloud()  {
         Log.i(LOG_TAG, "Connect to server:" + host + "\nClientId: " + clientId + "\nUsername: " + conOpt.getUserName());
         try {
             this.client = new MqttClient(host, clientId, new MemoryPersistence());
@@ -407,6 +410,7 @@ public class MqttClientToBroker implements Serializable, MqttCallback {
 
             // Mark connected
             setConnected(true);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -430,7 +434,12 @@ public class MqttClientToBroker implements Serializable, MqttCallback {
         // Try to reconnect
         try {
             for (int i = 0; i < MAX_AUTO_CONNECT_ATTEMPTS; i++) {
-                this.connect();
+                if (!this.client.isConnected()) {
+                    this.connectToMqttCloud();
+                } else {
+                    break;
+                }
+
                 Thread.sleep(Constants.WAIT_TO_STATE_CHANGE);
             }
         } catch (Exception ex) {

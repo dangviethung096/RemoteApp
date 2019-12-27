@@ -568,7 +568,7 @@
 //        boolean isConnect = false;
 //        for (int i = 0; i < Constants.LOOP_NUMBER; i++) {
 //            if (mqttClient.isConnecting()) {
-//                // Wait to connect
+//                // Wait to connectToMqttCloud
 //                Thread.sleep(Constants.SLEEP_TIME);
 //            } else {
 //                // connected or lost connection

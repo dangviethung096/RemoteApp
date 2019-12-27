@@ -190,6 +190,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "On resume");
+        // Check connection
+        Log.i(LOG_TAG, "Check connection: isConnected = " + mqttClient.isConnected());
+        if (mqttClient.isConnected()) {
+            mqttClient.makeConnectionToServer();
+        }
+
         // Resume app
         checkInformation();
     }
