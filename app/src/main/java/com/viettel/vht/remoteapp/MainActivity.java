@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Reconnect to AWS
         Log.i(LOG_TAG, "Connection status: " + mqttClient.isConnected());
-        if (mqttClient.isConnected()) {
+        if (!mqttClient.isConnected()) {
             mqttClient.makeConnectionToServer();
         }
 
