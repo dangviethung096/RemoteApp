@@ -25,7 +25,7 @@ public class Constants {
 
     public static final int MAX_TRY_REQUEST = 1;
 
-    public static final int MAX_DIFF_COUNT_IN_MANUAL = 2;
+    public static final int MAX_DIFF_COUNT_IN_MANUAL = 3;
 
     public static final int MAX_DIFF_COUNT_IN_AUTO = 1;
 

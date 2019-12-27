@@ -53,6 +53,7 @@ public class HomeFragment extends Fragment {
     private MainActivity parentActivity;
     private MqttClientToAWS mqttClient;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout.OnRefreshListener refreshListener;
 
     // Sound button
     private MediaPlayer soundButton;
@@ -134,12 +135,25 @@ public class HomeFragment extends Fragment {
         // Get swipe refresh
         swipeRefreshLayout = parentActivity.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setEnabled(true);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        // Get listener
+        refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.i(LOG_TAG, "Start swipe refresh layout");
                 startRefresh();
             }
+        };
+
+        swipeRefreshLayout.setOnRefreshListener(refreshListener);
+
+        // Set refreshing
+        parentActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+            }
         });
+
 
         // Get sound button
         soundButton = MediaPlayer.create(parentActivity, R.raw.sample_3);
@@ -785,31 +799,33 @@ public class HomeFragment extends Fragment {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             });
-
         }
     }
+
 
     /**
      * Start refresh in refresh layout
      */
     private void startRefresh() {
         Log.i(LOG_TAG, "Start refresh layout");
-        // Start refresh
-        parentActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        });
+        if (swipeRefreshLayout.isRefreshing()) {
+            // Start refresh
+            parentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            });
 
-        // disable all button
-        uiInRefreshData();
-        // check information
-        parentActivity.checkInformation();
-        // Refresh data
-        monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, dsIcon, dsText);
-        // update ui
-        updateUI();
+            // disable all button
+            uiInRefreshData();
+            // check information
+            parentActivity.checkInformation();
+            // Refresh data
+            monitoringSystem.readAndDisplayStatus(aqStatus, txtAQValue, txtAQTitle, txtAQLevel, gdView1, gdView2, gdView3, loadingBar, dsIcon, dsText);
+            // update ui
+            updateUI();
+        }
     }
 
 }

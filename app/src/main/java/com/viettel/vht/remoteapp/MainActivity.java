@@ -29,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.Menu;
@@ -148,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create();
 
-
-
         // Get info of device
         checkInformation();
     }
@@ -179,6 +178,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "On resume");
+
+        // Reconnect to AWS
+        Log.i(LOG_TAG, "Connection status: " + mqttClient.isConnected());
+        if (mqttClient.isConnected()) {
+            mqttClient.makeConnectionToServer();
+        }
+
         // Resume app
         checkInformation();
     }
