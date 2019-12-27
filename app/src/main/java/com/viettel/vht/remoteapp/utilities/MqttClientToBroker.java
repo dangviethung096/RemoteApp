@@ -219,7 +219,7 @@ public class MqttClientToBroker implements Serializable, MqttCallback {
                 mqttManager.connect(clientKeyStore, new AWSIotMqttClientStatusCallback() {
                     @Override
                     public void onStatusChanged(AWSIotMqttClientStatus status, final Throwable throwable) {
-                        Log.d(LOG_TAG, "Status = " + status.name());
+                        Log.i(LOG_TAG, "Status = " + status.name());
                         // Change connected status in remote control
                         if (status.name().equals(AWSIotMqttClientStatus.Connected.name())) {
                             // Run in ui thread
