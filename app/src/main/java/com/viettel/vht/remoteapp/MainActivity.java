@@ -174,19 +174,24 @@ public class MainActivity extends AppCompatActivity {
         stopCheckValidate();
     }
 
+    private boolean isFirstTime = true;
+
     @Override
     protected void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "On resume");
+        if (!isFirstTime) {
+            // Reconnect to AWS
+            Log.i(LOG_TAG, "Connection status: " + mqttClient.isConnected());
+            if (!mqttClient.isConnected()) {
+                mqttClient.makeConnectionToServer();
+            }
 
-        // Reconnect to AWS
-        Log.i(LOG_TAG, "Connection status: " + mqttClient.isConnected());
-        if (!mqttClient.isConnected()) {
-            mqttClient.makeConnectionToServer();
+            // Resume app
+            checkInformation();
+        } else {
+            isFirstTime = false;
         }
-
-        // Resume app
-        checkInformation();
     }
 
     private void subscribeDeviceInfo() {
@@ -273,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mqttClient.subscribe(AirPurifierTopics.SUBSCRIBE_STATE_SPEED, callbackSpeed);
-
     }
 
     private void subscribeModeControl() {

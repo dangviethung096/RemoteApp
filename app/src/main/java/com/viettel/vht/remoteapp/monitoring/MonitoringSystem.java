@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MonitoringSystem {
@@ -59,11 +60,44 @@ public class MonitoringSystem {
                             JSONObject jsonObject = new JSONObject(response);
                             //System.out.println("**LOG**: " + jsonObject.toString());
                             for (int i = 0; i < listStatus.size(); i++) {
-                                if (mesuareTime == null)
-                                    mesuareTime = DateUtils.getRelativeTimeSpanString(extractTime(jsonObject.getString(listStatus.get(i).getDataPointID())));
+                                if (mesuareTime == null) {
+                                    Long airthinxTime = extractTime(jsonObject.getString(listStatus.get(i).getDataPointID()));
+                                    Long localTime = System.currentTimeMillis();
+                                    if (localTime < airthinxTime) {
+                                        mesuareTime = "0 ";
+                                    } else {
+                                        mesuareTime = DateUtils.getRelativeTimeSpanString(airthinxTime);
+                                    }
+
+                                }
+
+
 
                                 if (jsonObject.getString(listStatus.get(i).getDataPointID()) != null) {
                                     listStatus.get(i).setValue(extractMeasurement(jsonObject.getString(listStatus.get(i).getDataPointID())));
+                                    // TODO Fake air quality
+//                                    if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.PM1)) {
+//                                        listStatus.get(i).setValue("15");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.PM25)) {
+//                                        listStatus.get(i).setValue("23");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.PM10)) {
+//                                        listStatus.get(i).setValue("25");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.CO2)) {
+//                                        listStatus.get(i).setValue("543");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.H2CO)) {
+//                                        listStatus.get(i).setValue("0.109");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.VOC)) {
+//                                        listStatus.get(i).setValue("0");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.Temperature)) {
+//                                        listStatus.get(i).setValue("23.5");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.HM)) {
+//                                        listStatus.get(i).setValue("53.1");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.Pressure)) {
+//                                        listStatus.get(i).setValue("1005.3");
+//                                    } else if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.AQ)) {
+//                                        listStatus.get(i).setValue("84");
+//                                    }
+
                                     calculateQualityLevel(listStatus.get(i));
 
                                     if (listStatus.get(i).getName() == activity.getApplicationContext().getString(R.string.PM1)
@@ -108,7 +142,8 @@ public class MonitoringSystem {
                             // set status for device
                             String msTime = mesuareTime.toString();
                             System.out.println("TIME: " + msTime);
-                            if (msTime.lastIndexOf("0 ") == 0 || msTime.lastIndexOf(" 0 ") > -1) {
+                            if (msTime.lastIndexOf("0 ") == 0 || msTime.lastIndexOf(" 0 ") > -5
+                                || msTime.lastIndexOf("1 ") == 0 || msTime.lastIndexOf(" 1 ") > -5) {
                                 //  System.out.println("I'M HERE");
                                 dsText.setText(activity.getApplicationContext().getString(R.string.online));
                                 dsText.setTextColor(activity.getColor(R.color.Black));

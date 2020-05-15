@@ -104,7 +104,6 @@
 //                        break;
 //                }
 //            } catch (DisconnectionException de) {
-//                // TODO process disconnect exception
 //                de.printStackTrace();
 //                // show popup for user choose
 //                mCloudConnectionDialog.show();
@@ -145,7 +144,6 @@
 ////        mNameRemoteControl.setText(R.string.air_purifier);
 //
 //        // Get status of remote control
-//        // TODO change in power state
 ////        mPowerState = root.findViewById(R.id.tv_power_title);
 ////        mSpeedState = root.findViewById(R.id.tv_speed_state);
 //
@@ -370,7 +368,6 @@
 //            if (mqttClient.isConnected()) {
 //                mqttClient.publish(message, topic);
 ////                mqttClient.getMqttManager().publishString(message, topic, AWSIotMqttQos.QOS0);
-//                // TODO : Get state after request change speed in server
 ////                removeSpeedStateInMainActivity();
 ////                mqttClient.requestSpeedStateOfDevice(parentActivity.getSmartPlugId());
 //                // Wait new information checker
@@ -401,7 +398,6 @@
 //            // check connection to aws
 //            if (mqttClient.isConnected()) {
 //                if (power.equals(getString(R.string.state_power_off))) {
-//                    // TODO request set on to smart plug id
 //
 //                }
 //                // request set on to device (air purifier)
@@ -415,13 +411,11 @@
 //                    willPowerOn = false;
 //                }
 //
-//                // TODO check state from server
 //                // Change ui if speed has difference
 //                ThreadUtils.runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
 //                    if (willPowerOn) {
-//                        // TODO change mSpeedState (receive from server, speed now of air purifier)
 ////                        mPowerState.setText(R.string.state_power_on);
 ////                        mSpeedState.setText(speed);
 ////                        tvPowerButton.setText(getString(R.string.power_off));
@@ -466,14 +460,12 @@
 ////        try {
 ////            if (mqttClient.isConnected()) {
 ////                mqttClient.getMqttManager().publishString(message, topic, AWSIotMqttQos.QOS0);
-////                // TODO change text view in button
 ////                final boolean willPowerOn;
 ////                if (tvUVButton.getText().equals(getString(R.string.uv_off))) {
 ////                    willPowerOn = true;
 ////                } else {
 ////                    willPowerOn = false;
 ////                }
-////                // TODO check state from server
 ////                // Change value in screen
 ////                ThreadUtils.runOnUiThread(new Runnable() {
 ////                    @Override
@@ -751,7 +743,6 @@
 //                // Disable button
 //                enableRemoteButton();
 //                int speedNumber = Integer.parseInt(speed);
-//                // TODO change color in power button
 //                if (power.equals(getString(R.string.state_power_off)) || speedNumber == 0) {
 //                    // Disable when off
 ////                    mPowerState.setText(R.string.state_power_off);

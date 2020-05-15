@@ -259,7 +259,6 @@
 //        try {
 //            if (mqttClient.isConnected()) {
 //                mqttClient.getMqttManager().publishString(msg, topic, AWSIotMqttQos.QOS0);
-//                // TODO : send publish to get state after get condition
 //            } else {
 //                mConnectDialog.show();
 //            }
